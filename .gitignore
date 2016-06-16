@@ -1,4 +1,8 @@
 *.classpath
 *.project
 *target
-*.settings
+**.settings
+**.idea
+**.iml
+**.ipr
+**.iws
