@@ -64,7 +64,7 @@ public class SequenceMgrImpl implements SequenceMgr{
 
     //如果已经达到最大重试次数
     if(retryTimes == maxRetryTimes){
-      throw new RuntimeException(Utils.connectBySplit(", ", seq.getSeqName(), seq.getCurValue(), DateUtils.format(seq.getLastModified())));
+      throw new RuntimeException(Utils.concatBySplit(", ", seq.getSeqName(), seq.getCurValue(), DateUtils.format(seq.getLastModified())));
     }
     
     //进行重试
