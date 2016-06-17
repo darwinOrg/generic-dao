@@ -10,7 +10,7 @@ package org.darwin.idcenter.bo;
  * <br/>created by Tianxin on 2015年8月6日 下午1:54:05
  */
 public interface Columns {
-  
+
   public final static String step = "step";
   public final static String seqName = "seq_name";
   public final static String curValue = "cur_value";

@@ -59,13 +59,13 @@ public class QuerySelect implements Query {
   public String getSQL() {
     StringBuilder sb = new StringBuilder(256);
     sb.append("select ").append(buildColumns()).append(" from ").append(table);
-    
+
     //如果有强制索引的设定
     String forceIndex = HintCtx.getForceIndex();
-    if(forceIndex != null){
+    if (forceIndex != null) {
       sb.append(" force index(").append(forceIndex).append(')');
     }
-    
+
     if (matches != null && !matches.isEmpty()) {
       sb.append(" where ").append(matches.getOperate());
     }

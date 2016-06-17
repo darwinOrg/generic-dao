@@ -9,7 +9,7 @@ package org.darwin.common.utils;
  * <br/>created by Tianxin on 2015年8月10日 下午2:50:19
  */
 public interface EntryMerger<ENTITY, K, V> extends KeyGetter<K, ENTITY> {
-  
+
   /**
    * 获取entity中的value，并与之前的value对比，获取出新的向map中put的value 
    * @param entity

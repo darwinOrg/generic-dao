@@ -10,10 +10,10 @@ package org.darwin.shardingDataSource.dataSource.rule;
  */
 public interface SlaveSelector {
 
-	/**
-	 * 获取本次选取的从库的index
-	 * @return
-	 * created by Tianxin on 2015年6月8日 上午10:59:15
-	 */
-	int getCurrentIndex();
+  /**
+   * 获取本次选取的从库的index
+   * @return
+   * created by Tianxin on 2015年6月8日 上午10:59:15
+   */
+  int getCurrentIndex();
 }

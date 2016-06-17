@@ -9,7 +9,7 @@ package org.darwin.common.utils;
  * <br/>created by Tianxin on 2015年7月13日 下午12:46:03
  */
 public class ValueUtils {
-  
+
   /**
    * 确保target不为空，如果为空，则返回其他默认值
    * @param value
@@ -17,13 +17,13 @@ public class ValueUtils {
    * @return
    * <br/>created by Tianxin on 2015年7月13日 下午12:47:57
    */
-  public final static <V> V ensureValueNotNull(V value, V defaultValue){
-    if(value == null){
+  public final static <V> V ensureValueNotNull(V value, V defaultValue) {
+    if (value == null) {
       return defaultValue;
     }
     return value;
   }
-  
+
   /**
    * 确保能进行正确的取值。如果target为空，则取默认值。如果getter获取出来的字段为空，则取默认值。
    * @param target
@@ -32,8 +32,8 @@ public class ValueUtils {
    * @return
    * <br/>created by Tianxin on 2015年7月13日 下午12:54:12
    */
-  public final static <V, E> V ensureNotNull(E target, KeyGetter<V, E> getter, V defaultValue){
-    if(target == null){
+  public final static <V, E> V ensureNotNull(E target, KeyGetter<V, E> getter, V defaultValue) {
+    if (target == null) {
       return defaultValue;
     }
     V v = getter.getKey(target);

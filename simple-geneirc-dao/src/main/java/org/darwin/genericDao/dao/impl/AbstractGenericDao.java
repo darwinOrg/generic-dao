@@ -66,7 +66,7 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
 
   protected Table table;
   protected Sequence seqConfig;
-  
+
   public String table() {
     Object shardKey = ThreadContext.getShardingKey();
     if (shardKey != null && table.shardCount() > 1) {
@@ -250,7 +250,7 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
   protected List<ENTITY> find(String column, Object value) {
     return find(Matches.one(column, value));
   }
-  
+
   /**
    * 获取符合匹配条件的数据
    * 
@@ -260,7 +260,7 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
   protected List<ENTITY> find(Matches matches) {
     return find(matches, null);
   }
-  
+
   /**
    * 获取符合匹配条件的数据，并按orders排序
    * 

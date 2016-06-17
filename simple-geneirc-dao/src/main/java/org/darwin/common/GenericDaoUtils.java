@@ -171,18 +171,18 @@ public class GenericDaoUtils {
     // 解析字段列表部分
     List<String> columns = splitColumns(sColumns);
     List<String> labels = new ArrayList<String>(columns.size());
-    for(String column : columns){
+    for (String column : columns) {
       // 是否有别名
       int index = column.lastIndexOf(' ');
-      if(index == -1){
+      if (index == -1) {
         // 是否是table.column
         int pointIndex = column.lastIndexOf('.');
-        if(pointIndex == -1){
+        if (pointIndex == -1) {
           labels.add(column);
-        }else{
-            labels.add(column.substring(pointIndex + 1));
+        } else {
+          labels.add(column.substring(pointIndex + 1));
         }
-      }else{
+      } else {
         labels.add(column.substring(index + 1));
       }
     }

@@ -28,7 +28,7 @@ public class SequenceDaoImpl extends GenericDao<Integer, Sequence> implements Se
    * 默认生成的该类的LOG记录器，使用slf4j组件。避免产生编译警告，使用protected修饰符。
    */
   protected final static Logger LOG = LoggerFactory.getLogger(SequenceDaoImpl.class);
-  
+
   @Qualifier("jdbcTemplate")
   public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
     super.setJdbcTemplate(jdbcTemplate);
@@ -39,13 +39,12 @@ public class SequenceDaoImpl extends GenericDao<Integer, Sequence> implements Se
   }
 
   public boolean modifyCurValue(long newValue, int id, long curValue, Date version) {
-    return update(Modifies.one(Columns.curValue, newValue), 
+    return update(Modifies.one(Columns.curValue, newValue),
         Matches.one(Columns.id, id).match(Columns.curValue, curValue).match(Columns.lastModified, version)) == 1;
   }
 
   public boolean modifyStep(int seqId, int step) {
-    return update(Modifies.one(Columns.step, step).modify(Columns.lastModified, new Date()), 
-        Matches.one(Columns.id, seqId)) == 1;
+    return update(Modifies.one(Columns.step, step).modify(Columns.lastModified, new Date()), Matches.one(Columns.id, seqId)) == 1;
   }
 
 }

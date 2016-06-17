@@ -14,5 +14,5 @@ import org.darwin.genericDao.dao.BaseDao;
  */
 public interface CreativeDao extends BaseDao<Long, Creative> {
 
-	List<Creative> findByTitle(String title);
+  List<Creative> findByTitle(String title);
 }

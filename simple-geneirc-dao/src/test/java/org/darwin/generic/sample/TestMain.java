@@ -20,53 +20,53 @@ import org.springframework.jdbc.core.RowMapper;
  */
 public class TestMain {
 
-	public static void main(String[] args) {
-		CreativeDao dao = getDao(CreativeDaoImpl.class);
-		
-	}
-	
-	public static<DAO extends GenericDao<?, ?>> DAO getDao(Class<DAO> daoClass){
-		try {
-			DAO dao = daoClass.newInstance();
-			dao.setJdbcTemplate(mockJdbcTemplate());
-			return dao;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+  public static void main(String[] args) {
+    CreativeDao dao = getDao(CreativeDaoImpl.class);
 
-	/**
-	 * @return
-	 * created by Tianxin on 2015年6月9日 下午2:37:31
-	 */
-	private static JdbcTemplate mockJdbcTemplate() {
-		return new JdbcTemplate(){
-			
-			@Override
-			public int update(String sql, Object... args) throws DataAccessException {
-				System.out.println(sql);
-				return 0;
-			}
+  }
 
-			@Override
-			public int[] batchUpdate(String sql, BatchPreparedStatementSetter pss) throws DataAccessException {
-				System.out.println(sql);
-				return new int[0];
-			}
+  public static <DAO extends GenericDao<?, ?>> DAO getDao(Class<DAO> daoClass) {
+    try {
+      DAO dao = daoClass.newInstance();
+      dao.setJdbcTemplate(mockJdbcTemplate());
+      return dao;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
 
-			@Override
-			public <T> List<T> query(String sql, Object[] args, RowMapper<T> rowMapper) throws DataAccessException {
-				System.out.println(sql);
-				return null;
-			}
+  /**
+   * @return
+   * created by Tianxin on 2015年6月9日 下午2:37:31
+   */
+  private static JdbcTemplate mockJdbcTemplate() {
+    return new JdbcTemplate() {
 
-			@Override
-			public int queryForInt(String sql, Object... args) throws DataAccessException {
-				System.out.println(sql);
-				return 0;
-			}
-		};
-	}
-	
-	
+      @Override
+      public int update(String sql, Object... args) throws DataAccessException {
+        System.out.println(sql);
+        return 0;
+      }
+
+      @Override
+      public int[] batchUpdate(String sql, BatchPreparedStatementSetter pss) throws DataAccessException {
+        System.out.println(sql);
+        return new int[0];
+      }
+
+      @Override
+      public <T> List<T> query(String sql, Object[] args, RowMapper<T> rowMapper) throws DataAccessException {
+        System.out.println(sql);
+        return null;
+      }
+
+      @Override
+      public int queryForInt(String sql, Object... args) throws DataAccessException {
+        System.out.println(sql);
+        return 0;
+      }
+    };
+  }
+
+
 }

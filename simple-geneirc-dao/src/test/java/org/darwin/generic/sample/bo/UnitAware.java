@@ -13,31 +13,34 @@ import org.darwin.genericDao.bo.UserObject;
  */
 public abstract class UnitAware<KEY extends Number> extends UserObject<KEY> {
 
-	/**
-	 * 推广计划的ID
-	 */
-	@Column("planid")
-	private long planId;
-	
-	/**
-	 * 推广单元的ID
-	 */
-	@Column("unitid")
-	private long unitId;
-	
-	
-	public long getPlanId() {
-		return planId;
-	}
-	public void setPlanId(long planId) {
-		this.planId = planId;
-	}
-	public long getUnitId() {
-		return unitId;
-	}
-	public void setUnitId(long unitId) {
-		this.unitId = unitId;
-	}
-	
-	
+  /**
+   * 推广计划的ID
+   */
+  @Column("planid")
+  private long planId;
+
+  /**
+   * 推广单元的ID
+   */
+  @Column("unitid")
+  private long unitId;
+
+
+  public long getPlanId() {
+    return planId;
+  }
+
+  public void setPlanId(long planId) {
+    this.planId = planId;
+  }
+
+  public long getUnitId() {
+    return unitId;
+  }
+
+  public void setUnitId(long unitId) {
+    this.unitId = unitId;
+  }
+
+
 }

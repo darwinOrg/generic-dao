@@ -29,15 +29,15 @@ public class IDServiceImpl implements IDService {
    * 数据缓存
    */
   Map<String, SequenceCache> caches = new HashMap<String, SequenceCache>();
-  
+
   @Autowired
   private SequenceDao sequenceDao;
-  
+
   /**
    * 更新DB的最多重试次数
    */
   private int maxRetryTimes = 3;
-  
+
   public void setMaxRetryTimes(int maxRetryTimes) {
     this.maxRetryTimes = maxRetryTimes;
   }
@@ -92,7 +92,7 @@ public class IDServiceImpl implements IDService {
     long nextValue = nextValue(sequence, totalCount, maxRetryTimes);
     cache.refresh(nextValue, sequence.getStep(), nextValue + sequence.getStep() * totalCount);
   }
-  
+
   /**
    * 从数据库中获取相应的值
    * @param seq
@@ -102,31 +102,31 @@ public class IDServiceImpl implements IDService {
    * <br/>created by Tianxin on 2015年8月6日 下午5:22:53
    */
   private long nextValue(Sequence seq, int size, int retryTimes) {
-    
+
     //条件
     int id = seq.getId();
     Date version = seq.getLastModified();
-    
+
     //计算目标值
     long curValue = seq.getCurValue();
     int step = seq.getStep();
     long newValue = curValue + size * step;
-    
+
     //如果成功，返回新的值
     boolean success = sequenceDao.modifyCurValue(newValue, id, curValue, version);
-    if(success){
+    if (success) {
       return newValue;
     }
 
     //如果已经达到最大重试次数
-    if(retryTimes == maxRetryTimes){
-      throw new RuntimeException(Utils.connectBySplit(", ", seq.getSeqName(), seq.getCurValue(), DateUtils.format(seq.getLastModified())));
+    if (retryTimes == maxRetryTimes) {
+      throw new RuntimeException(Utils.concatBySplit(", ", seq.getSeqName(), seq.getCurValue(), DateUtils.format(seq.getLastModified())));
     }
-    
+
     //进行重试
     retryTimes += 1;
     Sequence newSeq = sequenceDao.get(id);
-    if(newSeq.getStep() != step){
+    if (newSeq.getStep() != step) {
       throw new RuntimeException("两次重试过程中step发生了变化!");
     }
     return nextValue(newSeq, size, retryTimes);

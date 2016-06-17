@@ -18,32 +18,32 @@ import org.slf4j.LoggerFactory;
  */
 @Table(db = "sequence", name = "sequence", columnStyle = ColumnStyle.JAVA_TO_MYSQL)
 public class Sequence extends BaseObject<Integer> {
-  
+
   /**
    * sequence的名称
    */
   private String seqName;
-  
+
   /**
    * sequence增长的步长
    */
   private int step;
-  
+
   /**
    * 当前该sequence的值
    */
   private long curValue;
-  
+
   /**
    * 最后更新时间
    */
   private Date lastModified;
-  
+
   /**
    * 客户端缓存的数量
    */
   private int cacheSize;
-  
+
   public String getSeqName() {
     return seqName;
   }
@@ -75,7 +75,7 @@ public class Sequence extends BaseObject<Integer> {
   public void setLastModified(Date lastModified) {
     this.lastModified = lastModified;
   }
-  
+
   public int getCacheSize() {
     return cacheSize;
   }

@@ -13,7 +13,7 @@ import org.darwin.idcenter.bo.Sequence;
  * <br/>created by Tianxin on 2015年8月6日 下午1:49:46
  */
 public interface SequenceMgr {
-  
+
   /**
    * 向数据库中申请size个ID
    * @param seqName
@@ -22,7 +22,7 @@ public interface SequenceMgr {
    * <br/>created by Tianxin on 2015年8月6日 下午1:34:23
    */
   long getNextValues(String seqName, int size);
-  
+
   /**
    * 新建一个sequence
    * @param seqName
@@ -31,15 +31,15 @@ public interface SequenceMgr {
    * <br/>created by Tianxin on 2015年8月6日 下午5:59:37
    */
   void createSequence(String seqName, int curValue, int step);
-  
+
   /**
    * 修改一个Sequence
    * @param seqId
    * @param step
    * <br/>created by Tianxin on 2015年8月6日 下午6:00:44
    */
-  boolean modifyStep(int seqId,  int step);
-  
+  boolean modifyStep(int seqId, int step);
+
   /**
    * 获取所有的sequence
    * @return

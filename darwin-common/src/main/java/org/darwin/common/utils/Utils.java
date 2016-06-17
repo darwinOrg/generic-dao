@@ -86,7 +86,7 @@ public class Utils {
   public final static boolean isEmpty(Collection<?> cs) {
     return cs == null || cs.isEmpty();
   }
-  
+
   /**
    * 判断一个集合是否为空
    * @param map
@@ -106,7 +106,7 @@ public class Utils {
   public final static boolean isEmpty(String s) {
     return s == null || s.length() == 0;
   }
-  
+
   /**
    * 抽取实体列表的key作为一个新的列表,null的对象会被跳过
    * @param entities
@@ -125,14 +125,15 @@ public class Utils {
     }
     return keys;
   }
-  
+
   /**
    * 抽取实体列表的key作为一个新的列表,null的对象会被跳过
    * @param entities
    * @return
    * created by Tianxin on 2015年6月4日 下午1:35:07
    */
-  public final static <KEY extends Serializable, ENTITY> Set<KEY> extractKeySet(Collection<? extends ENTITY> entities, KeyGetter<KEY, ENTITY> keyGetter) {
+  public final static <KEY extends Serializable, ENTITY> Set<KEY> extractKeySet(Collection<? extends ENTITY> entities,
+      KeyGetter<KEY, ENTITY> keyGetter) {
     if (isEmpty(entities)) {
       return newSet(0);
     }
@@ -144,7 +145,7 @@ public class Utils {
     }
     return keys;
   }
-  
+
   /**
    * 将entities中的每个对象提取出相应的key与value组成一个map
    * @param entities
@@ -152,18 +153,18 @@ public class Utils {
    * @return
    * <br/>created by Tianxin on 2015年7月1日 下午5:46:26
    */
-  public final static <K,V,ENTITY> Map<K, List<V>> extract2KeyListMap(Collection<ENTITY> entities, EntryGetter<ENTITY,K,V> entryGetter){
-    if(isEmpty(entities)){
+  public final static <K, V, ENTITY> Map<K, List<V>> extract2KeyListMap(Collection<ENTITY> entities, EntryGetter<ENTITY, K, V> entryGetter) {
+    if (isEmpty(entities)) {
       return newMap(0);
     }
     Map<K, List<V>> map = newMap(entities.size());
     for (ENTITY entity : entities) {
       if (entity != null) {
-        
+
         K key = entryGetter.getKey(entity);
         V value = entryGetter.getValue(entity);
         List<V> list = map.get(key);
-        if(list == null){
+        if (list == null) {
           list = new ArrayList<V>();
           map.put(key, list);
         }
@@ -172,7 +173,7 @@ public class Utils {
     }
     return map;
   }
-  
+
   /**
    * 将entities中的每个对象提取出相应的key与value组成一个map
    * @param entities
@@ -180,18 +181,18 @@ public class Utils {
    * @return
    * <br/>created by Tianxin on 2015年7月1日 下午5:46:26
    */
-  public final static <K,V,ENTITY> Map<K, Set<V>> extract2KeySetMap(Collection<ENTITY> entities, EntryGetter<ENTITY,K,V> entryGetter){
-    if(isEmpty(entities)){
+  public final static <K, V, ENTITY> Map<K, Set<V>> extract2KeySetMap(Collection<ENTITY> entities, EntryGetter<ENTITY, K, V> entryGetter) {
+    if (isEmpty(entities)) {
       return newMap(0);
     }
     Map<K, Set<V>> map = newMap(entities.size());
     for (ENTITY entity : entities) {
       if (entity != null) {
-        
+
         K key = entryGetter.getKey(entity);
         V value = entryGetter.getValue(entity);
         Set<V> list = map.get(key);
-        if(list == null){
+        if (list == null) {
           list = new HashSet<V>();
           map.put(key, list);
         }
@@ -200,7 +201,7 @@ public class Utils {
     }
     return map;
   }
-  
+
   /**
    * 将entities中的每个对象提取出相应的key与value组成一个map
    * @param entities
@@ -208,17 +209,17 @@ public class Utils {
    * @return
    * <br/>created by Tianxin on 2015年7月1日 下午5:46:26
    */
-  public final static <K,V,ENTITY> Map<K, V> extract2Map(Collection<ENTITY> entities, EntryGetter<ENTITY,K,V> entryGetter){
-    if(isEmpty(entities)){
+  public final static <K, V, ENTITY> Map<K, V> extract2Map(Collection<ENTITY> entities, EntryGetter<ENTITY, K, V> entryGetter) {
+    if (isEmpty(entities)) {
       return newMap(0);
     }
-    Map<K,V> map = newMap(entities.size());
-    for(ENTITY entity : entities){
+    Map<K, V> map = newMap(entities.size());
+    for (ENTITY entity : entities) {
       map.put(entryGetter.getKey(entity), entryGetter.getValue(entity));
     }
     return map;
   }
-  
+
   /**
    * 将entities中的每个对象提取出相应的key与value组成一个map,如果有key的重复，将按照entryMerger指定的规则来使用相应的value
    * @param entities
@@ -226,12 +227,12 @@ public class Utils {
    * @return
    * <br/>created by Tianxin on 2015年7月1日 下午5:46:26
    */
-  public final static <K,V,ENTITY> Map<K, V> extract2Map(Collection<ENTITY> entities, EntryMerger<ENTITY,K,V> entryMerger){
-    if(isEmpty(entities)){
+  public final static <K, V, ENTITY> Map<K, V> extract2Map(Collection<ENTITY> entities, EntryMerger<ENTITY, K, V> entryMerger) {
+    if (isEmpty(entities)) {
       return newMap(0);
     }
-    Map<K,V> map = newMap(entities.size());
-    for(ENTITY entity : entities){
+    Map<K, V> map = newMap(entities.size());
+    for (ENTITY entity : entities) {
       K key = entryMerger.getKey(entity);
       V oldValue = map.get(key);
       V value = entryMerger.getValue(entity, oldValue);
@@ -239,7 +240,7 @@ public class Utils {
     }
     return map;
   }
-  
+
   /**
    * 将实体列表转化为一个map，key为keyGetter获取到的key，value为实体本身
    * @param entities
@@ -247,9 +248,11 @@ public class Utils {
    * @return
    * created by Tianxin on 2015年6月4日 下午1:35:07
    */
-  public final static <KEY extends Serializable, ENTITY> Map<KEY, ENTITY> trans2Map(Collection<ENTITY> entities, KeyGetter<KEY, ? super ENTITY> keyGetter) {
+  public final static <KEY extends Serializable, ENTITY> Map<KEY, ENTITY> trans2Map(Collection<ENTITY> entities,
+      KeyGetter<KEY, ? super ENTITY> keyGetter) {
     return trans2Map(entities, keyGetter, false);
   }
+
   /**
    * 将实体列表转化为一个map，key为keyGetter获取到的key，value为实体本身
    * @param entities
@@ -257,18 +260,19 @@ public class Utils {
    * @return
    * created by Tianxin on 2015年6月4日 下午1:35:07
    */
-  public final static <KEY extends Serializable, ENTITY> Map<KEY, ENTITY> trans2Map(Collection<ENTITY> entities, KeyGetter<KEY, ? super ENTITY> keyGetter, boolean checkDuplicate) {
+  public final static <KEY extends Serializable, ENTITY> Map<KEY, ENTITY> trans2Map(Collection<ENTITY> entities,
+      KeyGetter<KEY, ? super ENTITY> keyGetter, boolean checkDuplicate) {
     if (isEmpty(entities)) {
       return newMap(0);
     }
     Map<KEY, ENTITY> map = newMap(entities.size());
     for (ENTITY entity : entities) {
       if (entity != null) {
-        
+
         KEY key = keyGetter.getKey(entity);
         ENTITY o = map.get(key);
-        
-        if(o != null && checkDuplicate){
+
+        if (o != null && checkDuplicate) {
           throw new RuntimeException(connect(key, " 有两个重复的值在列表中！"));
         }
         map.put(key, entity);
@@ -276,7 +280,7 @@ public class Utils {
     }
     return map;
   }
-  
+
   /**
    * 将list先按照FilterSort的accept方法进行过滤，之后再按照sort方法进行排序，最后截取startIndex到endIndex之间的数据
    * @param fromIndex  从0开始，startIndex为第一个元素
@@ -286,38 +290,38 @@ public class Utils {
    * @return
    * <br/>created by Tianxin on 2015年9月1日 下午12:25:05
    */
-  public final static <E> List<E> filterAndSublist(int fromIndex, int toIndex, List<E> list, FilterSort<E> fs){
-    
+  public final static <E> List<E> filterAndSublist(int fromIndex, int toIndex, List<E> list, FilterSort<E> fs) {
+
     //容错判断
-    if(toIndex <= fromIndex){
-      throw new RuntimeException(connect("startIndex [", fromIndex, "] 大于 endIndex [", toIndex, "]" ));
+    if (toIndex <= fromIndex) {
+      throw new RuntimeException(connect("startIndex [", fromIndex, "] 大于 endIndex [", toIndex, "]"));
     }
-    
+
     //容错
-    if(isEmpty(list)){
+    if (isEmpty(list)) {
       return new ArrayList<E>(0);
     }
-    
+
     //过滤
     List<E> newList = new ArrayList<E>(list.size());
-    for(E e : list){
-      if(fs.accept(e)){
+    for (E e : list) {
+      if (fs.accept(e)) {
         newList.add(e);
       }
     }
-    
+
     //如果size有问题，则直接返回空列表
     int newSize = newList.size();
-    if(fromIndex >= newSize){
+    if (fromIndex >= newSize) {
       return new ArrayList<E>(0);
     }
-    
+
     //排序
     Collections.sort(newList, fs);
     int maxToIndex = newList.size();
     return newList.subList(fromIndex, maxToIndex < toIndex ? maxToIndex : toIndex);
   }
-  
+
   /**
    * 将list先排序，然后分页取到第pageNo页
    * @param pageNo
@@ -327,12 +331,12 @@ public class Utils {
    * @return
    * <br/>created by Tianxin on 2015年9月1日 下午12:35:28
    */
-  public final static <E> List<E> pageAndFilter(int pageNo, int pageSize, List<E> list, FilterSort<E> fs){
+  public final static <E> List<E> pageAndFilter(int pageNo, int pageSize, List<E> list, FilterSort<E> fs) {
     int fromIndex = pageSize * (pageNo - 1);
     int toIndex = fromIndex + pageSize;
     return filterAndSublist(fromIndex, toIndex, list, fs);
   }
-  
+
   /**
    * 将F的列表转换为T的列表,如果为null，则不添加进to的列表中
    * @param froms
@@ -340,14 +344,14 @@ public class Utils {
    * @return
    * <br/>created by Tianxin on 2015年7月23日 下午2:19:25
    */
-  public final static <F,T> List<T> trans2NewList(List<F> froms, Converter<F,T> converter){
-    if(froms == null || froms.size() == 0){
+  public final static <F, T> List<T> trans2NewList(List<F> froms, Converter<F, T> converter) {
+    if (froms == null || froms.size() == 0) {
       return new ArrayList<T>(0);
     }
-    
+
     List<T> tos = new ArrayList<T>(froms.size());
-    for(F f : froms){
-      if(f == null){
+    for (F f : froms) {
+      if (f == null) {
         continue;
       }
       T to = converter.convert(f);
@@ -355,7 +359,7 @@ public class Utils {
     }
     return tos;
   }
-  
+
   /**
    * 将实体列表转化为一个map，key为keyGetter获取到的key，value为实体本身
    * @param entities
@@ -363,17 +367,18 @@ public class Utils {
    * @return
    * created by Tianxin on 2015年6月4日 下午1:35:07
    */
-  public final static <KEY extends Serializable, ENTITY> Map<KEY, List<ENTITY>> trans2KeyListMap(Collection<ENTITY> entities, KeyGetter<KEY, ? super ENTITY> keyGetter) {
+  public final static <KEY extends Serializable, ENTITY> Map<KEY, List<ENTITY>> trans2KeyListMap(Collection<ENTITY> entities,
+      KeyGetter<KEY, ? super ENTITY> keyGetter) {
     if (isEmpty(entities)) {
       return newMap(0);
     }
     Map<KEY, List<ENTITY>> map = newMap(entities.size());
     for (ENTITY entity : entities) {
       if (entity != null) {
-        
+
         KEY key = keyGetter.getKey(entity);
         List<ENTITY> list = map.get(key);
-        if(list == null){
+        if (list == null) {
           list = new ArrayList<ENTITY>();
           map.put(key, list);
         }
@@ -453,7 +458,7 @@ public class Utils {
     list.add(e);
     return list;
   }
-  
+
   /**
    * 字符串连接,改成concat方法
    * 
@@ -481,7 +486,7 @@ public class Utils {
     }
     return sb.toString();
   }
-  
+
   /**
    * 字符串连接,改成concat方法
    * 
@@ -492,7 +497,7 @@ public class Utils {
   public final static String connectBySplit(String split, Object... os) {
     return concatBySplit(split, os);
   }
-  
+
   /**
    * 字符串连接
    * 
@@ -573,7 +578,7 @@ public class Utils {
 
     return oList.toArray(new Object[oList.size()]);
   }
-  
+
   /**
    * 构造日志中的SQL
    * @param sql
@@ -581,20 +586,20 @@ public class Utils {
    * @return
    * created by Tianxin on 2015年6月16日 上午10:28:13
    */
-  public final static String toLogSQL(String sql, Object...args){
-    
-    if(sql == null || sql.length() == 0){
+  public final static String toLogSQL(String sql, Object... args) {
+
+    if (sql == null || sql.length() == 0) {
       return sql;
     }
-    
-    if(args == null || args.length == 0){
+
+    if (args == null || args.length == 0) {
       return sql;
     }
-    
+
     int count = countChar(sql, '?');
-    if(count == args.length){
+    if (count == args.length) {
       return putArgsIn2SQL(sql, args);
-    }else {
+    } else {
       return putArgsAfterSQL(sql, args);
     }
   }
@@ -610,7 +615,7 @@ public class Utils {
   private static String putArgsAfterSQL(String sql, Object[] args) {
     StringBuilder sb = new StringBuilder(sql.length() * 2);
     sb.append(" with args [");
-    for(Object arg : args){
+    for (Object arg : args) {
       sb.append(getSQLParam(arg)).append(',');
     }
     sb.setCharAt(sb.length() - 1, ']');
@@ -628,13 +633,13 @@ public class Utils {
   private static String putArgsIn2SQL(String sql, Object... args) {
     StringBuilder sb = new StringBuilder(sql.length() * 2);
     int argIndex = 0;
-    for(int i = 0 ; i < sql.length() ; i ++){
+    for (int i = 0; i < sql.length(); i++) {
       char c = sql.charAt(i);
-      if(c == '?'){
+      if (c == '?') {
         Object param = args[argIndex];
         sb.append(getSQLParam(param));
         argIndex += 1;
-      }else{
+      } else {
         sb.append(c);
       }
     }
@@ -650,13 +655,13 @@ public class Utils {
    * created by Tianxin on 2015年6月16日 上午10:39:01
    */
   public static int countChar(String s, char c) {
-    if(isEmpty(s)){
+    if (isEmpty(s)) {
       return 0;
     }
-    
+
     int count = 0;
     for (int i = 0; i < s.length(); i++) {
-      if(s.charAt(i) == c){
+      if (s.charAt(i) == c) {
         count += 1;
       }
     }
@@ -670,14 +675,14 @@ public class Utils {
    * created by Tianxin on 2015年6月16日 上午10:32:27
    */
   public static Object getSQLParam(Object param) {
-    if(param == null){
+    if (param == null) {
       return "null";
     }
-    if(param instanceof String){
+    if (param instanceof String) {
       return connect('\'', param, '\'');
     }
-    if(param instanceof Date){
-      return connect('\'', DateUtils.getStringDate((Date)param), '\'');
+    if (param instanceof Date) {
+      return connect('\'', DateUtils.getStringDate((Date) param), '\'');
     }
     return param;
   }

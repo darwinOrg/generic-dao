@@ -16,78 +16,78 @@ import org.darwin.genericDao.dao.impl.GenericDao;
  */
 @Table(db = "", name = "tb_creative join x on ", keyColumn = "creative_id")
 public class Creative extends UnitAware<Long> {
-	
-	private String title;
-	
-	private String desc;
-	
-	private int status;
-	
-	private int addUser;
-	
-	private Date addTime;
-	
-	private int modUser;
-	
-	private Date modTime;
 
-	public String getTitle() {
-		return title;
-	}
+  private String title;
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+  private String desc;
 
-	public String getDesc() {
-		return desc;
-	}
+  private int status;
 
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
+  private int addUser;
 
-	public int getStatus() {
-		return status;
-	}
+  private Date addTime;
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
+  private int modUser;
 
-	public int getAddUser() {
-		return addUser;
-	}
+  private Date modTime;
 
-	public void setAddUser(int addUser) {
-		this.addUser = addUser;
-	}
+  public String getTitle() {
+    return title;
+  }
 
-	public Date getAddTime() {
-		return addTime;
-	}
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
-	public void setAddTime(Date addTime) {
-		this.addTime = addTime;
-	}
+  public String getDesc() {
+    return desc;
+  }
 
-	public int getModUser() {
-		return modUser;
-	}
+  public void setDesc(String desc) {
+    this.desc = desc;
+  }
 
-	public void setModUser(int modUser) {
-		this.modUser = modUser;
-	}
+  public int getStatus() {
+    return status;
+  }
 
-	public Date getModTime() {
-		return modTime;
-	}
+  public void setStatus(int status) {
+    this.status = status;
+  }
 
-	public void setModTime(Date modTime) {
-		this.modTime = modTime;
-	}
-	
-	public static void main(String[] args) {
-      System.out.println(GenericDaoUtils.getGenericEntityClass(CreativeDaoImpl.class, GenericDao.class, 1));
-    }
+  public int getAddUser() {
+    return addUser;
+  }
+
+  public void setAddUser(int addUser) {
+    this.addUser = addUser;
+  }
+
+  public Date getAddTime() {
+    return addTime;
+  }
+
+  public void setAddTime(Date addTime) {
+    this.addTime = addTime;
+  }
+
+  public int getModUser() {
+    return modUser;
+  }
+
+  public void setModUser(int modUser) {
+    this.modUser = modUser;
+  }
+
+  public Date getModTime() {
+    return modTime;
+  }
+
+  public void setModTime(Date modTime) {
+    this.modTime = modTime;
+  }
+
+  public static void main(String[] args) {
+    System.out.println(GenericDaoUtils.getGenericEntityClass(CreativeDaoImpl.class, GenericDao.class, 1));
+  }
 }

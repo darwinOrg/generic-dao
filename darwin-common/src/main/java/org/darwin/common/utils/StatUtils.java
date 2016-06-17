@@ -77,7 +77,7 @@ public class StatUtils {
   @Deprecated
   public final static String getDateStringFromInt(int yyyyMMdd) {
     String date = String.valueOf(yyyyMMdd);
-    return Utils.connect(date.substring(0, 4), '-',date.substring(4, 6), '-', date.substring(6)); 
+    return Utils.connect(date.substring(0, 4), '-', date.substring(4, 6), '-', date.substring(6));
   }
 
   /**
@@ -115,7 +115,7 @@ public class StatUtils {
       throw new RuntimeException(e);
     }
   }
-  
+
   /**
    * 获取date的下一天。<b>直接使用DateUtils中的同名方法。</b>
    * @param date
@@ -132,7 +132,7 @@ public class StatUtils {
       throw new RuntimeException(e);
     }
   }
-  
+
   /**
    * 获取date的前一天。<b>直接使用DateUtils中的同名方法。</b>
    * @param date
@@ -149,7 +149,7 @@ public class StatUtils {
       throw new RuntimeException(e);
     }
   }
-  
+
 
   /**
    * 返回标准的时间格式。<b>直接使用DateUtils中的同名方法。</b>
@@ -165,7 +165,7 @@ public class StatUtils {
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     return format.format(date);
   }
-  
+
   /**
    * 将list中的对象按照对象的key分组，放到map中。map的value为sumtype字段的累加值.
    * @param list
@@ -174,21 +174,21 @@ public class StatUtils {
    * <br/>created by Tianxin on 2015年7月14日 下午2:38:46
    */
   @Deprecated
-  public static <KEY, NUM, ENTITY> Map<KEY, NUM> trans2SumMap(List<ENTITY> list, NumGetter<ENTITY, KEY, NUM> getter){
+  public static <KEY, NUM, ENTITY> Map<KEY, NUM> trans2SumMap(List<ENTITY> list, NumGetter<ENTITY, KEY, NUM> getter) {
     Map<KEY, NUM> map = Utils.newMap();
-    for(ENTITY e : list){
+    for (ENTITY e : list) {
       KEY key = getter.getKey(e);
       NUM num = getter.getNum(e);
-      
+
       NUM sum = map.get(key);
-      if(sum == null){
+      if (sum == null) {
         map.put(key, num);
-      }else{
+      } else {
         map.put(key, getter.sum(sum, num));
       }
     }
-    
+
     return map;
   }
-  
+
 }

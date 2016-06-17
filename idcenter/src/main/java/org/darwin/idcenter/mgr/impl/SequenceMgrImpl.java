@@ -22,16 +22,16 @@ import org.springframework.stereotype.Component;
  * <br/>created by Tianxin on 2015年8月6日 下午1:50:45
  */
 @Component
-public class SequenceMgrImpl implements SequenceMgr{
-  
+public class SequenceMgrImpl implements SequenceMgr {
+
   @Autowired
   private SequenceDao sequenceDao;
-  
+
   /**
    * 更新DB的最多重试次数
    */
   private int maxRetryTimes = 3;
-  
+
   /**
    * 默认生成的该类的LOG记录器，使用slf4j组件。避免产生编译警告，使用protected修饰符。
    */
@@ -46,27 +46,27 @@ public class SequenceMgrImpl implements SequenceMgr{
    * <br/>created by Tianxin on 2015年8月6日 下午5:22:53
    */
   private long nextValue(Sequence seq, int size, int retryTimes) {
-    
+
     //条件
     int id = seq.getId();
     Date version = seq.getLastModified();
-    
+
     //计算目标值
     long curValue = seq.getCurValue();
     int step = seq.getStep();
     long newValue = curValue + size * step;
-    
+
     //如果成功，返回新的值
     boolean success = sequenceDao.modifyCurValue(newValue, id, curValue, version);
-    if(success){
+    if (success) {
       return newValue;
     }
 
     //如果已经达到最大重试次数
-    if(retryTimes == maxRetryTimes){
+    if (retryTimes == maxRetryTimes) {
       throw new RuntimeException(Utils.concatBySplit(", ", seq.getSeqName(), seq.getCurValue(), DateUtils.format(seq.getLastModified())));
     }
-    
+
     //进行重试
     retryTimes += 1;
     Sequence newSeq = sequenceDao.get(id);

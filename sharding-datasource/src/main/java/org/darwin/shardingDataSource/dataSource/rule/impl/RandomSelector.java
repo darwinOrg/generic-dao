@@ -13,30 +13,29 @@ import org.darwin.shardingDataSource.dataSource.rule.SlaveSelector;
  * created by Tianxin on 2015年6月8日 上午11:06:38
  */
 public class RandomSelector implements SlaveSelector {
-	
-	private RandomSelector() {
-	}
 
-	/**
-	 * @param slaveCount
-	 */
-	public RandomSelector(int slaveCount) {
-		this();
-		this.slaveCount = slaveCount;
-	}
+  private RandomSelector() {}
 
-	/**
-	 * 从库的数量
-	 */
-	private int slaveCount;
-	
-	/**
-	 * 随机选取器
-	 */
-	private Random random = new Random();
+  /**
+   * @param slaveCount
+   */
+  public RandomSelector(int slaveCount) {
+    this();
+    this.slaveCount = slaveCount;
+  }
 
-	public int getCurrentIndex() {
-		return random.nextInt(slaveCount);
-	}
+  /**
+   * 从库的数量
+   */
+  private int slaveCount;
+
+  /**
+   * 随机选取器
+   */
+  private Random random = new Random();
+
+  public int getCurrentIndex() {
+    return random.nextInt(slaveCount);
+  }
 
 }
