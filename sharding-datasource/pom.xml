@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.darwin</groupId>
 	<artifactId>sharding-datasource</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.4-SNAPSHOT</version>
 	<name>sharding-datasource</name>
 	<description>数据库分库中的动态数据源组件，可以实现读写分离、数据切片</description>
 

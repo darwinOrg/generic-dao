@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.darwin.common.utils.Utils;
+import org.darwin.genericDao.param.IncreaseParam;
 import org.darwin.genericDao.param.Param;
 import org.darwin.genericDao.param.SQLParams;
 
@@ -34,7 +35,11 @@ public class Modify implements Operate {
   private Param param;
 
   public String getOperate() {
-    return Utils.concat(column, "=?");
+    if (param instanceof IncreaseParam) {
+      return Utils.concat(column, '=', column,  "+?");
+    } else {
+      return Utils.concat(column, "=?");
+    }
   }
 
   public List<Object> getParams() {

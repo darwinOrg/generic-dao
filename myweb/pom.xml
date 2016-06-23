@@ -2,14 +2,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.darwin</groupId>
-	<artifactId>idcenter</artifactId>
+	<artifactId>myweb</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.4-SNAPSHOT</version>
-	<name>idcenter Maven Webapp</name>
+	<name>myweb Maven Webapp</name>
 	<url>http://maven.apache.org</url>
-	
+
 
 	<properties>
+
 		<spring.version>3.2.6.RELEASE</spring.version>
 		<mysql.version>5.1.34</mysql.version>
 		<c3p0.version>0.9.2.1</c3p0.version>
@@ -21,7 +22,7 @@
 	<repositories>
 		<repository>
 			<id>shenma-nexus-snapshots</id>
-			<url>http://100.85.69.70:8081/nexus/content/repositories/snapshots/</url>
+			<url>http://10.3.5.70:8081/nexus/content/repositories/snapshots/</url>
 		</repository>
 		<repository>
 			<id>com.springsource.repository.bundles.release</id>
@@ -48,10 +49,36 @@
 			<version>${slf4j.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.logging</groupId>
+			<artifactId>jboss-logging</artifactId>
+			<version>3.1.4.GA</version>
+		</dependency>
+
 		<!-- simpleGenericDao -->
 		<dependency>
 			<groupId>org.darwin</groupId>
 			<artifactId>simple-generic-dao</artifactId>
+			<version>0.0.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.darwin</groupId>
+			<artifactId>sharding-datasource</artifactId>
 			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 

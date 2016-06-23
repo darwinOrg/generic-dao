@@ -1,0 +1,18 @@
+<configuration>
+	<appender name="rootLogger"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${catalina.home}/logs/slf4j.dashboard.log</fileNamePattern>
+			<maxHistory>365</maxHistory>
+		</rollingPolicy>
+		<encoder charset="GBK">
+			<pattern>%d{HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+		<Encoding>GBK</Encoding>
+	</appender>
+	
+	<root level="INFO">
+		<appender-ref ref="rootLogger" />
+	</root>
+</configuration>  
