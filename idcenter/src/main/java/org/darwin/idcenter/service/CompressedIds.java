@@ -71,7 +71,7 @@ public class CompressedIds implements Serializable {
    * @return
    * <br/>created by Tianxin on 2015年8月6日 下午1:05:34
    */
-  public long[] values() {
+  public long[] longValues() {
     if (metas == null || metas.length == 0) {
       return new long[0];
     }
@@ -96,6 +96,19 @@ public class CompressedIds implements Serializable {
   }
 
   /**
+   * 以int形式获取全部的值
+   * @return
+   * <br/>created by Tianxin on 2016年6月23日 下午4:03:54
+   */
+  public int[] intValues(){
+    long[] longValues = longValues();
+    int[] values = new int[longValues.length];
+    for(int i = 0 ; i < longValues.length ; i ++){
+      values[i] = (int)longValues[i];
+    }
+    return values;
+  }
+  /**
    * 压缩单元
    * 
    * <br/>created by Tianxin on 2016年6月17日 上午11:05:14
@@ -105,5 +118,11 @@ public class CompressedIds implements Serializable {
     private long start;
     private long step;
     private int count;
+  }
+  
+  public static void main(String[] args) {
+    long[] ids = new long[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,18,20,22,24};
+    CompressedIds cids = new CompressedIds(ids);
+    System.out.println(cids);
   }
 }
