@@ -40,9 +40,16 @@ public class WriteHandler<ENTITY> {
 
     Collection<ColumnMapper> mappers = columnMappers.values();
     for (ColumnMapper mapper : mappers) {
+      
+      //装装载对象的字段集
       allColumns.add(mapper.getSQLColumn());
+      if(mapper.isExtendColumn()){
+        continue;
+      }
+      
+      //新增和修改的字段集
       insertColumns.add(mapper.getSQLColumn());
-      if (mapper.getAnnotation() == null || mapper.getAnnotation().modifiable()) {
+      if (mapper.isModifiable()) {
         updateColumns.add(mapper.getSQLColumn());
       }
     }

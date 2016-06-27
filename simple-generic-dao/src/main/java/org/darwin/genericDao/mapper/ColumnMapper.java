@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import org.darwin.genericDao.annotations.Column;
 import org.darwin.genericDao.annotations.StatType;
 import org.darwin.genericDao.annotations.enums.ColumnStyle;
+import org.darwin.genericDao.annotations.enums.Type;
 import org.darwin.genericDao.mapper.jdbc.FetcherCache;
 import org.darwin.genericDao.mapper.jdbc.TypeFetcher;
 
@@ -147,5 +148,9 @@ public class ColumnMapper {
 
   public boolean isModifiable() {
     return annotation == null || annotation.modifiable();
+  }
+  
+  public boolean isExtendColumn(){
+    return type != null && type.equals(Type.EXTEND);
   }
 }
