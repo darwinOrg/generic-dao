@@ -4,7 +4,7 @@
 	<groupId>org.darwin</groupId>
 	<artifactId>myweb</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>0.0.5-SNAPSHOT</version>
 	<name>myweb Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 
@@ -22,7 +22,7 @@
 	<repositories>
 		<repository>
 			<id>shenma-nexus-snapshots</id>
-			<url>http://10.3.5.70:8081/nexus/content/repositories/snapshots/</url>
+			<url>http://darwin-nexus.com:8081/nexus/content/repositories/snapshots/</url>
 		</repository>
 		<repository>
 			<id>com.springsource.repository.bundles.release</id>
@@ -74,12 +74,12 @@
 		<dependency>
 			<groupId>org.darwin</groupId>
 			<artifactId>simple-generic-dao</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
+			<version>0.0.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.darwin</groupId>
 			<artifactId>sharding-datasource</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
+			<version>0.0.5-SNAPSHOT</version>
 		</dependency>
 
 		<!-- datasource -->

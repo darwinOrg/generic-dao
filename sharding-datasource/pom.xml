@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.darwin</groupId>
 	<artifactId>sharding-datasource</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>0.0.5-SNAPSHOT</version>
 	<name>sharding-datasource</name>
 	<description>数据库分库中的动态数据源组件，可以实现读写分离、数据切片</description>
 
@@ -26,7 +26,7 @@
 	<distributionManagement>
 		<repository>
 			<id>nexus-snapshots</id>
-			<url>http://mynexus.com:8081/nexus/content/repositories/snapshots/</url>
+			<url>http://darwin-nexus.com:8081/nexus/content/repositories/snapshots/</url>
 		</repository>
 	</distributionManagement>
 
@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>org.darwin</groupId>
 			<artifactId>darwin-common</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
+			<version>0.0.5-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
