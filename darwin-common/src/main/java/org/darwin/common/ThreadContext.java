@@ -77,11 +77,25 @@ public class ThreadContext {
   }
 
   /**
+   * 将shard的key放入上下文
    * @param key
    * created by Tianxin on 2015年6月15日 下午2:58:12
    */
   public static void putShardingKey(Object key) {
     put(shardingKey, key);
+  }
+  
+  /**
+   * 将切片的key移除
+   * created by Tianxin on 2015年6月15日 下午2:58:12
+   */
+  public static void removeShardingKey() {
+    try {
+      CTX.get().remove(shardingKey);
+    } catch (NullPointerException e) {
+      System.out.println("调用ThreadContext时，必须要先进行ThreadContext的init，线程退出前再进行clean，避免被其他线程使用到本线程的数据，发生线程安全问题。");
+      throw e;
+    }
   }
 
   @SuppressWarnings("unchecked")
