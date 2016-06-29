@@ -24,8 +24,79 @@ public enum TableShardRule {
       }
       return Utils.concat(db, '.', table);
     }
+  }, 
+  
+  /**
+   * 只有table有后缀，db名没有后缀
+   */
+  OLNY_TABLE_MOD {
+    @Override
+    public String generateName(String db, String table, int shardCount, Object shardKey) {
+      
+      //计算index
+      int index = 0;
+      if(shardKey instanceof Long){
+        index = (int)((Long)shardKey % shardCount);
+      }else{
+        index = (Integer) shardKey % shardCount;
+      }
+      
+      if (Utils.isEmpty(db)) {
+        return Utils.concat(table, index);
+      }
+      return Utils.concat(db, '.', table, index);
+    }
+  }, 
+  
+  /**
+   * db和table都有后缀，按常规模8的方式区分
+   */
+  DB_TABLE_MOD {
+    @Override
+    public String generateName(String db, String table, int shardCount, Object shardKey) {
+      
+      //计算index
+      int index = 0;
+      if(shardKey instanceof Long){
+        index = (int)((Long)shardKey % shardCount);
+      }else{
+        index = (Integer) shardKey % shardCount;
+      }
+      
+      if (Utils.isEmpty(db)) {
+        return Utils.concat(table, index);
+      }
+      return Utils.concat(db, index, '.', table, index);
+    }
+  }, 
+  
+  /**
+   * TDDL的拼接方式
+   */
+  TDDL_MODE {
+    @Override
+    public String generateName(String db, String table, int shardCount, Object shardKey) {
+      
+      //计算index
+      int tableIndex = 0;
+      int dbIndex = 0;
+      if(shardKey instanceof Long){
+        tableIndex = (int)((Long)shardKey % shardCount);
+        dbIndex = (int)((Long)shardKey % 8);
+      }else{
+        tableIndex = (Integer) shardKey % shardCount;
+        dbIndex = (int)((Integer)shardKey % 8);
+      }
+      
+      String tableSurffix = String.valueOf(10000 + tableIndex).substring(1);
+      
+      if (Utils.isEmpty(db)) {
+        return Utils.concat(table, tableIndex);
+      }
+      return Utils.concat(db, "000", dbIndex, '.', table, tableSurffix);
+    }
   };
-
+  
   /**
    * 生成表名字
    * @param db
