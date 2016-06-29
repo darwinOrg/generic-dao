@@ -25,16 +25,6 @@ import org.springframework.stereotype.Repository;
 public class PlanDaoImpl extends GenericDao<Integer, Plan> implements PlanDao{
   
   @Override
-  protected String generateShardTableName(Object shardKey, Table table) {
-    if(shardKey == null){
-      throw new RuntimeException("xxxx");
-    }
-    int dbIndex = (int)((Integer) shardKey / table.shardCount() % 2);
-    int tbIndex = (int)((Integer) shardKey % table.shardCount());
-    return Utils.concat(table.db(), dbIndex, '.', table.name(), tbIndex);
-  }
-  
-  @Override
   @Autowired
   public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
     super.setJdbcTemplate(jdbcTemplate);

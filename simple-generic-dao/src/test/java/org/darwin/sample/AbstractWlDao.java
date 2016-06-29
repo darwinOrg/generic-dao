@@ -22,16 +22,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class AbstractWlDao<KEY extends Serializable, ENTITY extends BaseObject<KEY>> extends GenericDao<KEY, ENTITY> {
 
-  @Override
-  protected String generateShardTableName(Object shardKey, Table table) {
-
-    Long lShardKey = (Long) shardKey;
-    if (Utils.isEmpty(table.db())) {
-      return Utils.concat(table.name(), "000", lShardKey % table.shardCount());
-    }
-    return Utils.concat(table.db(), "000", lShardKey % table.shardCount(), '.', table.name(), "000", lShardKey % table.shardCount());
-  }
-
   @Resource(name = "wolongJdbcTemplate")
   public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
     super.setJdbcTemplate(jdbcTemplate);

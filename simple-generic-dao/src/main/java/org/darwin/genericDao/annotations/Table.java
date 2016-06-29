@@ -11,6 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.darwin.genericDao.annotations.enums.ColumnStyle;
+import org.darwin.genericDao.annotations.enums.TableShardRule;
 
 
 /**
@@ -51,17 +52,16 @@ public @interface Table {
   String keyColumn() default "id";
 
   /**
-   * 这里感觉意义不大
-   * 该表的主键是否是自动生成
-   * @return
-   * created by Tianxin on 2015年6月1日 下午2:57:20
-  boolean audoIncrementKey() default false;
-   */
-
-  /**
    * 对象属性到数据库列的映射规则，默认为 {@link ColumnStyle#LOWER_CASE}向前兼容
    * 
    * @return 映射规则 @see ColumnStyle
    */
   ColumnStyle columnStyle() default ColumnStyle.JAVA_TO_MYSQL;
+  
+  /**
+   * 配置该表的分表规则
+   * @return
+   * <br/>created by Tianxin on 2016年6月29日 下午5:05:40
+   */
+  TableShardRule shardRule() default TableShardRule.NORMAL;
 }

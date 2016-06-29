@@ -69,26 +69,10 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
 
   public String table() {
     Object shardKey = ThreadContext.getShardingKey();
-    if (shardKey != null && table.shardCount() > 1) {
-      return generateShardTableName(shardKey, table);
-    } else {
-      if (Utils.isEmpty(table.db())) {
-        return table.name();
-      }
-      return Utils.concat(table.db(), '.', table.name());
-    }
-  }
-
-  /**
-   * 生成一个分库的表名
-   * @param shardKey
-   * @param db
-   * @param name
-   * @return
-   * <br/>created by Tianxin on 2016年6月16日 下午5:39:54
-   */
-  protected String generateShardTableName(Object shardKey, Table table) {
-    throw new RuntimeException("未实现generateShardTableName方法!");
+    String db = table.db();
+    String name = table.name();
+    int shardCount = table.shardCount();
+    return table.shardRule().generateName(db, name, shardCount, shardKey);
   }
 
   public String keyColumn() {
