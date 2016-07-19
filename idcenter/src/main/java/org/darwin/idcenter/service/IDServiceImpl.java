@@ -58,7 +58,7 @@ public class IDServiceImpl implements IDService {
     if (cache == null) {
       cache = new SequenceCache(sequence);
       caches.put(sequence, cache);
-      refreshCache(cache, count);
+      refreshCache(cache);
     }
 
     //如果正常获取了sequence，则直接返回
@@ -69,7 +69,7 @@ public class IDServiceImpl implements IDService {
 
     //如果没获取到足够的ID，则需要重新初始化缓存
     int leftCount = count - values.length;
-    refreshCache(cache, leftCount);
+    refreshCache(cache);
     long[] newValues = cache.nextValues(leftCount);
 
 
@@ -86,11 +86,11 @@ public class IDServiceImpl implements IDService {
    * @param count
    * <br/>created by Tianxin on 2015年11月25日 下午4:12:02
    */
-  private void refreshCache(SequenceCache cache, int count) {
+  private void refreshCache(SequenceCache cache) {
     Sequence sequence = sequenceDao.getByName(cache.getSequenceName());
-    int totalCount = count + sequence.getCacheSize();
+    int totalCount = sequence.getCacheSize();
     long nextValue = nextValue(sequence, totalCount, maxRetryTimes);
-    cache.refresh(nextValue, sequence.getStep(), nextValue + sequence.getStep() * totalCount);
+    cache.refresh(sequence.getCurValue(), sequence.getStep(), nextValue);
   }
 
   /**
@@ -105,6 +105,7 @@ public class IDServiceImpl implements IDService {
 
     //条件
     int id = seq.getId();
+    String seqName = seq.getSeqName();
     Date version = seq.getLastModified();
 
     //计算目标值
@@ -113,7 +114,7 @@ public class IDServiceImpl implements IDService {
     long newValue = curValue + size * step;
 
     //如果成功，返回新的值
-    boolean success = sequenceDao.modifyCurValue(newValue, id, curValue, version);
+    boolean success = sequenceDao.modifyCurValue(newValue, seqName, curValue, version);
     if (success) {
       return newValue;
     }

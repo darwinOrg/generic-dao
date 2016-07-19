@@ -26,13 +26,13 @@ public interface SequenceDao extends BaseDao<Integer, Sequence> {
   /**
    * 将sequence的当前水位提升至newValue
    * @param newValue    新的sequence水位
-   * @param id  sequence项的ID
+   * @param seqName  sequence项名字
    * @param curValue    现在的值
    * @param version  时间版本
    * @return
    * <br/>created by Tianxin on 2015年8月6日 下午5:27:11
    */
-  boolean modifyCurValue(long newValue, int id, long curValue, Date version);
+  boolean modifyCurValue(long newValue, String seqName, long curValue, Date version);
 
   /**
    * 修改sequence的步长

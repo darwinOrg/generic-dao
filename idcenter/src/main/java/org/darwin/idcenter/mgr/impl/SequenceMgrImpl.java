@@ -48,7 +48,8 @@ public class SequenceMgrImpl implements SequenceMgr {
   private long nextValue(Sequence seq, int size, int retryTimes) {
 
     //条件
-    int id = seq.getId();
+    int seqId = seq.getId();
+    String seqName = seq.getSeqName();
     Date version = seq.getLastModified();
 
     //计算目标值
@@ -57,7 +58,7 @@ public class SequenceMgrImpl implements SequenceMgr {
     long newValue = curValue + size * step;
 
     //如果成功，返回新的值
-    boolean success = sequenceDao.modifyCurValue(newValue, id, curValue, version);
+    boolean success = sequenceDao.modifyCurValue(newValue, seqName, curValue, version);
     if (success) {
       return newValue;
     }
@@ -69,7 +70,7 @@ public class SequenceMgrImpl implements SequenceMgr {
 
     //进行重试
     retryTimes += 1;
-    Sequence newSeq = sequenceDao.get(id);
+    Sequence newSeq = sequenceDao.get(seqId);
     return nextValue(newSeq, size, retryTimes);
   }
 

@@ -14,6 +14,7 @@ import org.darwin.idcenter.bo.Sequence;
 import org.darwin.idcenter.dao.SequenceDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -29,18 +30,19 @@ public class SequenceDaoImpl extends GenericDao<Integer, Sequence> implements Se
    */
   protected final static Logger LOG = LoggerFactory.getLogger(SequenceDaoImpl.class);
 
-  @Qualifier("jdbcTemplate")
+//  @Qualifier("jdbcTemplate")
+  @Autowired
   public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
     super.setJdbcTemplate(jdbcTemplate);
   }
 
   public Sequence getByName(String seqName) {
-    return findOne(Matches.one("seq_type", seqName));
+    return findOne(Matches.one("seq_name", seqName));
   }
 
-  public boolean modifyCurValue(long newValue, int id, long curValue, Date version) {
+  public boolean modifyCurValue(long newValue, String seqName, long curValue, Date version) {
     return update(Modifies.one(Columns.curValue, newValue),
-        Matches.one(Columns.id, id).match(Columns.curValue, curValue).match(Columns.lastModified, version)) == 1;
+        Matches.init().eq(Columns.seqName, seqName).eq(Columns.curValue, curValue).eq(Columns.lastModified, version)) == 1;
   }
 
   public boolean modifyStep(int seqId, int step) {
