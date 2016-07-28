@@ -322,6 +322,11 @@ public class GenericDaoUtils {
           columnName = table.keyColumn();
         }
       }
+      
+      //如果是要忽略的字段
+      if(columnName.toLowerCase().equals("ignore")){
+        continue;
+      }
       ColumnMapper columnMapper = new ColumnMapper(getter, setter, fieldType, column, columnStyle, type, columnName);
       columnMappers.put(columnMapper.getColumn(), columnMapper);
     }
