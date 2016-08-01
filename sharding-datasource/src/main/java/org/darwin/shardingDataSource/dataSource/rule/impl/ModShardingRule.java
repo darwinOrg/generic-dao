@@ -19,14 +19,14 @@ public class ModShardingRule implements ShardingRule {
       throw new RuntimeException("切片数量小于2，不能使用切片数据源");
     }
 
-    int iShardingKey = 0;
+    long iShardingKey = 0;
     if (shardingKey == null) {
       iShardingKey = ThreadContext.getShardingKey();
     } else {
       iShardingKey = ThreadContext.get(shardingKey);
     }
 
-    return iShardingKey % shardCount;
+    return (int)iShardingKey % shardCount;
   }
 
   /**

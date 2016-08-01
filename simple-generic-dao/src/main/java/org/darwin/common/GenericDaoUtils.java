@@ -172,7 +172,9 @@ public class GenericDaoUtils {
     List<String> columns = splitColumns(sColumns);
     List<String> labels = new ArrayList<String>(columns.size());
     for (String column : columns) {
-      // 是否有别名
+      
+      // 先去掉字段的空格，然后确认是否有别名
+      column = column.trim();
       int index = column.lastIndexOf(' ');
       if (index == -1) {
         // 是否是table.column
@@ -309,25 +311,25 @@ public class GenericDaoUtils {
         continue;
       }
 
+      //
       Column column = fetchColumn(field, getter, setter, entityClass);
       StatType type = fetchColumnType(field, getter, setter, entityClass);
+      if(column != null && column.value().toLowerCase().equals("ignore")){
+        continue;
+      }
 
       Class<?> fieldType = getter.getReturnType();
-      String columnName = null;
+      String keyColumnName = null;
       if (setter.getName().equals("setId") && BaseObject.class.isAssignableFrom(entityClass)) {
         fieldType = getGenericEntityClass(entityClass, BaseObject.class, 0);
 
         if (column == null) {
           Table table = GenericDaoUtils.getTable(entityClass);
-          columnName = table.keyColumn();
+          keyColumnName = table.keyColumn();
         }
       }
       
-      //如果是要忽略的字段
-      if(columnName.toLowerCase().equals("ignore")){
-        continue;
-      }
-      ColumnMapper columnMapper = new ColumnMapper(getter, setter, fieldType, column, columnStyle, type, columnName);
+      ColumnMapper columnMapper = new ColumnMapper(getter, setter, fieldType, column, columnStyle, type, keyColumnName);
       columnMappers.put(columnMapper.getColumn(), columnMapper);
     }
 

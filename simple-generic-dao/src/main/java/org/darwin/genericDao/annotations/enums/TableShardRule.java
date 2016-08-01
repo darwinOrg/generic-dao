@@ -88,12 +88,15 @@ public enum TableShardRule {
         dbIndex = (int)((Integer)shardKey % 8);
       }
       
-      String tableSurffix = String.valueOf(10000 + tableIndex).substring(1);
+      
+      StringBuilder sb = new StringBuilder(String.valueOf(10000 + tableIndex));
+      sb.setCharAt(0, '_');
+      String tableSurffix = sb.toString();
       
       if (Utils.isEmpty(db)) {
-        return Utils.concat(table, tableIndex);
+        return Utils.concat(table, tableSurffix);
       }
-      return Utils.concat(db, "000", dbIndex, '.', table, tableSurffix);
+      return Utils.concat(db, "_000", dbIndex, '.', table, tableSurffix);
     }
   };
   

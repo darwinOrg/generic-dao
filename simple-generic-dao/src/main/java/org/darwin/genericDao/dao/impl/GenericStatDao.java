@@ -75,9 +75,9 @@ public class GenericStatDao<ENTITY> extends AbstractGenericDao<ENTITY> implement
     }
   }
 
-  private String dateColumn = null;
-  private List<String> keyColumns = new ArrayList<String>();
-  private List<String> allColumns = new ArrayList<String>();
+  protected String dateColumn = null;
+  protected List<String> keyColumns = new ArrayList<String>();
+  protected List<String> allColumns = new ArrayList<String>();
 
   /**
    * 获取数据，如果需要按时间聚合，则按其他字段groupBy，把不同时间的汇总到一起
