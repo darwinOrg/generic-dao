@@ -89,7 +89,7 @@ public enum TableShardRule {
       }
       
       
-      StringBuilder sb = new StringBuilder(String.valueOf(10000 + tableIndex));
+      StringBuilder sb = new StringBuilder().append(10000 + tableIndex);
       sb.setCharAt(0, '_');
       String tableSurffix = sb.toString();
       
@@ -97,6 +97,32 @@ public enum TableShardRule {
         return Utils.concat(table, tableSurffix);
       }
       return Utils.concat(db, "_000", dbIndex, '.', table, tableSurffix);
+    }
+  },
+  
+  /**
+   * OPLOG的拼接方式
+   */
+  OPLOG_MODE {
+    @Override
+    public String generateName(String db, String table, int shardCount, Object shardKey) {
+      
+      //计算index
+      int tableIndex = 0;
+      if(shardKey instanceof Long){
+        tableIndex = (int)((Long)shardKey % shardCount);
+      }else{
+        tableIndex = (Integer) shardKey % shardCount;
+      }
+      
+      StringBuilder sb = new StringBuilder().append(10000 + tableIndex);
+      sb.setCharAt(0, '_');
+      String tableSurffix = sb.toString();
+      
+      if (Utils.isEmpty(db)) {
+        return Utils.concat(table, tableSurffix);
+      }
+      return Utils.concat(db, '.', table, tableSurffix);
     }
   };
   
