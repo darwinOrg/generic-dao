@@ -124,6 +124,29 @@ public enum TableShardRule {
       }
       return Utils.concat(db, '.', table, tableSurffix);
     }
+  },
+  
+  /**
+   * HONGQIANG的拼接方式
+   */
+  ONLY_SHARD_DB {
+    @Override
+    public String generateName(String db, String table, int shardCount, Object shardKey) {
+      
+      //如果没有DB名字
+      if (Utils.isEmpty(db)) {
+        return table;
+      }
+      
+      //计算index
+      int dbIndex = 0;
+      if(shardKey instanceof Long){
+        dbIndex = (int)((Long)shardKey % 8);
+      }else{
+        dbIndex = (int)((Integer)shardKey % 8);
+      }
+      return Utils.concat(db, "_000", dbIndex, '.', table);
+    }
   };
   
   /**
