@@ -40,7 +40,6 @@ public class CreativeDaoImpl extends GenericDao<Long, Creative> implements Creat
    */
   private void findRecords() {
     find(Matches.one("id", SQLParams.express("userid=from_user")));
-
   }
 
 }

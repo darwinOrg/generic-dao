@@ -12,6 +12,10 @@ public class SQLParams {
   public static Param like(String s) {
     return new LikeParam(s);
   }
+  
+  public static Param like(String s, boolean reverse) {
+    return new LikeParam(s, reverse);
+  }
 
   public static Param like(String s, boolean left, boolean right) {
     return new LikeParam(s, left, right);

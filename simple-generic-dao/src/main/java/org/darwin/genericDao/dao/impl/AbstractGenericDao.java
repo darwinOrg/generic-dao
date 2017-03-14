@@ -134,9 +134,14 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
     }
     String sql = writeHandler.generateInsertSQL(entities);
     Object[] args = writeHandler.generateInsertParams(entities);
-    LOG.info(Utils.toLogSQL(sql, args));
+    LOG.info(entities.size() < MAX_CREATE_LOG_COUNT ? Utils.toLogSQL(sql, args) : sql);
     return executeBySQL(sql, args);
   }
+  
+  /**
+   * insert的对象数小于这个阈值时候打印全数据，否则只打印SQL
+   */
+  private final static int MAX_CREATE_LOG_COUNT = 20;
 
   /**
    * 执行insert动作的操作
@@ -151,7 +156,7 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
     }
     String sql = writeHandler.generateInsertSQL(entities, type);
     Object[] args = writeHandler.generateInsertParams(entities);
-    LOG.info(Utils.toLogSQL(sql, args));
+    LOG.info(entities.size() < MAX_CREATE_LOG_COUNT ? Utils.toLogSQL(sql, args) : sql);
     return executeBySQL(sql, args);
   }
 

@@ -33,8 +33,37 @@ public class Order implements Operate {
   private Order() {}
 
   private Order(String column, boolean asc) {
+    checkColumn(column);
     this.column = column;
     this.asc = asc;
+  }
+
+  /**
+   * 校验该字符串是否是一个合法的字段名
+   * @param s
+   * <br/>created by Tianxin on 2016年12月16日 上午11:23:16
+   */
+  private static void checkColumn(String s) {
+    
+    //不能为null
+    if( s == null){
+      throw new RuntimeException("order by column can not be null!");
+    }
+    
+    //不能为空串
+    s = s.trim();
+    if(s.length() == 0){
+      throw new RuntimeException("order by column can not be empty!");
+    }
+    
+    //字符必须都合法
+    for(int i = 0 ; i < s.length() - 1; i ++){
+      char c = s.charAt(i);
+      if((c >= 48 && c <= 57) || (c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c == 95){
+        continue;
+      }
+      throw new RuntimeException("illegal column value : " + s);
+    }
   }
 
   private String column;
@@ -51,5 +80,4 @@ public class Order implements Operate {
   public boolean isEmpty() {
     return false;
   }
-
 }

@@ -30,9 +30,13 @@ public class Creative extends UnitAware<Long> {
   private int modUser;
 
   private Date modTime;
-
+  
   public String getTitle() {
     return title;
+  }
+  
+  public int[] getTest(){
+    return null;
   }
 
   public void setTitle(String title) {

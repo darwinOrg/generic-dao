@@ -17,6 +17,16 @@ public class LikeParam implements Param {
   private boolean leftStrict = false;
   private boolean rightStrict = false;
   private Object value;
+  private boolean reverse = false;
+  
+  /**
+   * @param word
+   * @param reverse
+   */
+  public LikeParam(String word, boolean reverse) {
+    this.value = word;
+    this.reverse = reverse;
+  }
 
   /**
    * @param word
@@ -29,11 +39,22 @@ public class LikeParam implements Param {
    * @param word
    * @param leftStrict
    * @param rightStrict
+   * @param reverse
    */
-  public LikeParam(String word, boolean leftStrict, boolean rightStrict) {
+  public LikeParam(String word, boolean leftStrict, boolean rightStrict, boolean reverse) {
     this.value = word;
     this.leftStrict = leftStrict;
     this.rightStrict = rightStrict;
+    this.reverse = reverse;
+  }
+
+  /**
+   * @param word
+   * @param leftStrict
+   * @param rightStrict
+   */
+  public LikeParam(String word, boolean leftStrict, boolean rightStrict) {
+    this(word, leftStrict, rightStrict, false);
   }
 
   public List<Object> getParams() {
@@ -41,10 +62,19 @@ public class LikeParam implements Param {
   }
 
   public String buildOperate(String column) {
-    if (leftStrict && rightStrict) {
-      return Utils.concat(column, " = ?");
+    if (reverse) {
+      if (leftStrict && rightStrict) {
+        return Utils.concat(column, " != ?");
+      } else {
+        return Utils.concat(column, " not like ?");
+      }
     } else {
-      return Utils.concat(column, " like ?");
+      if (leftStrict && rightStrict) {
+        return Utils.concat(column, " = ?");
+      } else {
+        return Utils.concat(column, " like ?");
+      }
+
     }
   }
 

@@ -189,6 +189,17 @@ public class Matches implements Operate {
   public Matches like(String column, Object value) {
     return match(column, SQLParams.like(String.valueOf(value)));
   }
+  
+  /**
+   * 向匹配集中增加一个like关系
+   * @param column
+   * @param value
+   * @return
+   * <br/>created by Tianxin on 2015年12月19日 下午2:51:25
+   */
+  public Matches dislike(String column, Object value) {
+    return match(column, SQLParams.like(String.valueOf(value), false));
+  }
 
   /**
    * 向匹配集中增加另一个匹配集

@@ -610,6 +610,8 @@ public class GenericDaoUtils {
    */
   private static boolean isTypeFromJdk(Class<?> type) {
     if (type.isPrimitive()) {
+    } else if (type.getPackage()== null) {
+      return false;
     } else if (type.getPackage().getName().startsWith("java")) {
     } else if (Date.class.isAssignableFrom(type)) {
     } else if (BigDecimal.class.isAssignableFrom(type)) {
