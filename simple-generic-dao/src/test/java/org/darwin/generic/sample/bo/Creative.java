@@ -14,7 +14,7 @@ import org.darwin.genericDao.dao.impl.GenericDao;
 /**
  * created by Tianxin on 2015年6月9日 下午2:28:30
  */
-@Table(db = "", name = "tb_creative join x on ", keyColumn = "creative_id")
+@Table(db = "", name = "tb_creative", keyColumn = "creative_id")
 public class Creative extends UnitAware<Long> {
 
   private String title;

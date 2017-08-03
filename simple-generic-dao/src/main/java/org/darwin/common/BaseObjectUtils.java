@@ -70,11 +70,13 @@ public class BaseObjectUtils {
       for (E e : list1) {
         if (e != null && !ks.contains(e.getId())) {
           list.add(e);
+          ks.add(e.getId());
         }
       }
       for (E e : list2) {
         if (e != null && !ks.contains(e.getId())) {
           list.add(e);
+          ks.add(e.getId());
         }
       }
       return list;

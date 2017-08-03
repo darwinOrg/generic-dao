@@ -43,6 +43,11 @@ public class GenericDao<KEY extends Serializable, ENTITY extends BaseObject<KEY>
     super();
     this.keyClass = GenericDaoUtils.getGenericEntityClass(entityClass, BaseObject.class, 0);
   }
+  
+  public GenericDao(Class<ENTITY> entityClass) {
+    super(entityClass);
+    this.keyClass = GenericDaoUtils.getGenericEntityClass(entityClass, BaseObject.class, 0);
+  }
 
   /**
    * 主键的类型
@@ -80,16 +85,14 @@ public class GenericDao<KEY extends Serializable, ENTITY extends BaseObject<KEY>
     List<ENTITY> entities = Utils.toEntities(entity);
     final String sql = writeHandler.generateInsertSQL(entities);
     final Object[] params = writeHandler.generateInsertParams(entities);
-
     // 如果id不为null，则直接插入即可
     if (entity.getId() != null && !entity.getId().toString().equals("0")) {
-      LOG.info(Utils.toLogSQL(sql, params));
       return executeBySQL(sql, params) >= 1;
     }
-
+    // 若id为null，则sql语句中用0替代
+    LOG.info(Utils.toLogSQL(sql, params));
     // ID为null时，执行插入操作同时要获取插入的key
     KeyHolder keyHolder = new GeneratedKeyHolder();
-    LOG.info(sql);
     int rowCount = this.jdbcTemplate.update(new PreparedStatementCreator() {
       public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);

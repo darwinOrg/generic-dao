@@ -4,8 +4,10 @@
  */
 package org.darwin.generic.sample;
 
+import java.util.Date;
 import java.util.List;
 
+import org.darwin.generic.sample.bo.Creative;
 import org.darwin.generic.sample.dao.CreativeDao;
 import org.darwin.generic.sample.dao.impl.CreativeDaoImpl;
 import org.darwin.genericDao.dao.impl.GenericDao;
@@ -21,8 +23,20 @@ import org.springframework.jdbc.core.RowMapper;
 public class TestMain {
 
   public static void main(String[] args) {
-    CreativeDao dao = getDao(CreativeDaoImpl.class);
-
+    CreativeDaoImpl dao = getDao(CreativeDaoImpl.class);
+    
+    Creative creative = new Creative();
+//    creative.setId(123456L);
+    creative.setAddTime(new Date());
+    creative.setAddUser(11111);
+    creative.setDesc("for test");
+    creative.setPlanId(222);
+    creative.setTitle("test");
+    creative.setUnitId(999999);
+//    dao.create(creative);
+    dao.update(creative);
+    
+    dao.updateTitle("xxx");
   }
 
   public static <DAO extends GenericDao<?, ?>> DAO getDao(Class<DAO> daoClass) {
@@ -44,25 +58,25 @@ public class TestMain {
 
       @Override
       public int update(String sql, Object... args) throws DataAccessException {
-        System.out.println(sql);
+//        System.out.println(sql);
         return 0;
       }
 
       @Override
       public int[] batchUpdate(String sql, BatchPreparedStatementSetter pss) throws DataAccessException {
-        System.out.println(sql);
+//        System.out.println(sql);
         return new int[0];
       }
 
       @Override
       public <T> List<T> query(String sql, Object[] args, RowMapper<T> rowMapper) throws DataAccessException {
-        System.out.println(sql);
+//        System.out.println(sql);
         return null;
       }
 
       @Override
       public int queryForInt(String sql, Object... args) throws DataAccessException {
-        System.out.println(sql);
+//        System.out.println(sql);
         return 0;
       }
     };

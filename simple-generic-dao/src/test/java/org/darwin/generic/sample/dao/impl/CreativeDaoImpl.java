@@ -4,7 +4,9 @@
  */
 package org.darwin.generic.sample.dao.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.darwin.generic.sample.bo.Creative;
@@ -39,7 +41,13 @@ public class CreativeDaoImpl extends GenericDao<Long, Creative> implements Creat
    * <br/>created by Tianxin on 2015年7月17日 下午12:28:10
    */
   private void findRecords() {
-    find(Matches.one("id", SQLParams.express("userid=from_user")));
+    Collection<Long> ids = new ArrayList<>();
+    ids.add(1L);
+    ids.add(2L);
+    ids.add(3L);
+    find(Matches.init().match("id", ids));
+//    find(Matches.or().addMatches(Matches.one("id", 1)).addMatches(Matches.one("id", 2)).addMatches(Matches.one("id", 3)));
+//    find(Matches.one("id", SQLParams.express(" in (1,2,3)")));
   }
 
 }
