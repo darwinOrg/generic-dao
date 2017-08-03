@@ -59,9 +59,39 @@ public @interface Table {
   ColumnStyle columnStyle() default ColumnStyle.JAVA_TO_MYSQL;
   
   /**
-   * 配置该表的分表规则
+   * 配置该表的分表规则, 一般是内置的实现，如果需要自由定制请使用 {@link #forceShardRuleClass()}.
+   * 二者的规则是:<br>
+   *   <ul>
+   *     <li>如果{@link #forceShardRuleClass()}不为null,则使用{@link #forceShardRuleClass()}</li>
+   *      <li>否则使用{@link #shardRule()}</li>
+   *   </ul><br>
+   * 之所以使用这么矬的方式实现是因为java注解支持的成员支持:<br>
+   *   <ul>
+   *    <li>A primitive type</li>
+   *    <li>String</li>
+   *    <li>Class or an invocation of Class</li>
+   *    <li>An enum type</li>
+   *    <li>An annotation type</li>
+   *    <li>An array type whose component type is one of the preceding types</li>
+   *   </ul>
+   *
    * @return
+   *
    * <br/>created by Tianxin on 2016年6月29日 下午5:05:40
+   *
+   * @see <a href="https://docs.oracle.com/javase/tutorial/java/annotations/basics.html">
+   *   https://docs.oracle.com/javase/tutorial/java/annotations/basics.html</a>
    */
   TableShardRule shardRule() default TableShardRule.NORMAL;
+
+
+
+  /**
+   * 分库分布自定义规则
+   *
+   * @return
+   *
+   * @see #shardRule()
+   */
+  Class<? extends TableShardPolicy> forceShardRuleClass() default NullTableShardPolicy.class ;
 }

@@ -5,19 +5,19 @@
 package org.darwin.genericDao.annotations.enums;
 
 import org.darwin.common.utils.Utils;
+import org.darwin.genericDao.annotations.TableShardPolicy;
 
 
 /**
  * 分表规则的枚举
  * <br/>created by Tianxin on 2016年6月29日 下午5:06:23
  */
-public enum TableShardRule {
+public enum TableShardRule implements TableShardPolicy {
 
   /**
    * 最普通的表名规则，没有任何分库分表的
    */
   NORMAL {
-    @Override
     public String generateName(String db, String table, int shardCount, Object shardKey) {
       if (Utils.isEmpty(db)) {
         return table;
@@ -30,7 +30,6 @@ public enum TableShardRule {
    * 只有table有后缀，db名没有后缀
    */
   OLNY_TABLE_MOD {
-    @Override
     public String generateName(String db, String table, int shardCount, Object shardKey) {
       
       //计算index
@@ -52,7 +51,6 @@ public enum TableShardRule {
    * db和table都有后缀，按常规模8的方式区分
    */
   DB_TABLE_MOD {
-    @Override
     public String generateName(String db, String table, int shardCount, Object shardKey) {
       
       //计算index
@@ -74,7 +72,6 @@ public enum TableShardRule {
    * TDDL的拼接方式
    */
   TDDL_MODE {
-    @Override
     public String generateName(String db, String table, int shardCount, Object shardKey) {
       
       //计算index
@@ -104,7 +101,6 @@ public enum TableShardRule {
    * OPLOG的拼接方式
    */
   OPLOG_MODE {
-    @Override
     public String generateName(String db, String table, int shardCount, Object shardKey) {
       
       //计算index
@@ -130,7 +126,6 @@ public enum TableShardRule {
    * HONGQIANG的拼接方式
    */
   ONLY_SHARD_DB {
-    @Override
     public String generateName(String db, String table, int shardCount, Object shardKey) {
       
       //如果没有DB名字
@@ -148,14 +143,4 @@ public enum TableShardRule {
       return Utils.concat(db, "_000", dbIndex, '.', table);
     }
   };
-  
-  /**
-   * 生成表名字
-   * @param db
-   * @param table
-   * @param shardKey
-   * @return
-   * <br/>created by Tianxin on 2016年6月29日 下午5:13:32
-   */
-  public abstract String generateName(String db, String table, int shardCount, Object shardKey);
 }

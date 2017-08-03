@@ -10,12 +10,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.darwin.common.GenericDaoUtils;
 import org.darwin.common.ThreadContext;
 import org.darwin.common.utils.Utils;
+import org.darwin.genericDao.annotations.NullTableShardPolicy;
 import org.darwin.genericDao.annotations.Sequence;
 import org.darwin.genericDao.annotations.Table;
+import org.darwin.genericDao.annotations.TableShardPolicy;
 import org.darwin.genericDao.annotations.enums.ColumnBuilder;
 import org.darwin.genericDao.dao.TableAware;
 import org.darwin.genericDao.mapper.BasicMappers;
@@ -44,6 +48,9 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
    */
   protected final static Logger LOG = LoggerFactory.getLogger(AbstractGenericDao.class);
 
+  protected final static ConcurrentMap<Class<?extends TableShardPolicy>,TableShardPolicy>
+          TABLE_SHARD_POLICY_CONCURRENT_MAP =
+          new ConcurrentHashMap<>();
   /**
    * 构造函数
    */
@@ -81,7 +88,7 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
     String db = table.db();
     String name = table.name();
     int shardCount = table.shardCount();
-    return table.shardRule().generateName(db, name, shardCount, shardKey);
+    return getValidShardPolicy().generateName(db, name, shardCount, shardKey);
   }
 
   public String keyColumn() {
@@ -608,6 +615,33 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
   protected int executeBySQL(String sql, Object... args) {
     LOG.info(Utils.toLogSQL(sql, args));
     return jdbcTemplate.update(sql, args);
+  }
+
+  /**
+   * 获取当前有效的分库分表策略
+   *
+   * @return
+   */
+  protected final TableShardPolicy getValidShardPolicy(){
+    if (table.forceShardRuleClass() == NullTableShardPolicy.class){
+      return table.shardRule();
+    }
+
+
+    if(TABLE_SHARD_POLICY_CONCURRENT_MAP.containsKey(table.forceShardRuleClass())){
+      return TABLE_SHARD_POLICY_CONCURRENT_MAP.get(table.forceShardRuleClass());
+    }
+    try {
+      TableShardPolicy policy =  table.forceShardRuleClass().newInstance();
+      TableShardPolicy oldPolicy =  TABLE_SHARD_POLICY_CONCURRENT_MAP.putIfAbsent(table.forceShardRuleClass(),policy);
+      if (oldPolicy == null) {
+        return policy;
+      }
+      return oldPolicy;
+    } catch (InstantiationException | IllegalAccessException e) {
+      LOG.warn("getValidShardPolicy",e);
+      throw new RuntimeException(e);
+    }
   }
 
   /**
