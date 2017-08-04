@@ -80,7 +80,10 @@ public @interface Table {
    * <br/>created by Tianxin on 2016年6月29日 下午5:05:40
    *
    * @see <a href="https://docs.oracle.com/javase/tutorial/java/annotations/basics.html">
-   *   https://docs.oracle.com/javase/tutorial/java/annotations/basics.html</a>
+   *   https://docs.oracle.com/javase/tutorial/java/annotations/basics.html</a><br>
+   *
+   * @see <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-9.html#jls-9.6.1">
+   *   https://docs.oracle.com/javase/specs/jls/se8/html/jls-9.html#jls-9.6.1</a>
    */
   TableShardRule shardRule() default TableShardRule.NORMAL;
 
