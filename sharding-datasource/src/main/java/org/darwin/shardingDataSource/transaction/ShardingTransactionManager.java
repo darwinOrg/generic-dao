@@ -6,9 +6,13 @@ package org.darwin.shardingDataSource.transaction;
 
 import javax.sql.DataSource;
 
+import org.darwin.common.ThreadContext;
+import org.darwin.shardingDataSource.dataSource.AbstractShardDataSource;
+import org.darwin.shardingDataSource.exception.DataSourceRoutingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 
 /**
  * 
@@ -29,4 +33,56 @@ public class ShardingTransactionManager extends DataSourceTransactionManager {
   public void setDataSource(DataSource dataSource) {
     super.setDataSource(dataSource);
   }
+
+  @Override
+  protected void doBegin(Object transaction, TransactionDefinition definition) {
+
+    doInitialBeforeBegin(transaction, definition);
+
+    super.doBegin(transaction, definition);
+  }
+
+  /**
+   * 初始化事务的读写属性，依据是transaction的readonly属性设置
+   *
+   * @param transaction transaction object
+   * @param definition  transaction definition
+   */
+  private void doInitialBeforeBegin(Object transaction, TransactionDefinition definition) {
+
+    DataSource ds = getDataSource();
+    if (!(ds instanceof AbstractShardDataSource)) {
+      throw new DataSourceRoutingException("data source is not a ShardingDataSource");
+    }
+
+    AbstractShardDataSource vds = (AbstractShardDataSource) ds;
+    vds.putShardKey((long)ThreadContext.getShardingKey());
+    if (definition.isReadOnly()) {
+      vds.putVisitAttribute(vds.getDataSourceName(), AbstractShardDataSource.VisitAttribute.SLAVE);
+    } else {
+      vds.putVisitAttribute(vds.getDataSourceName(), AbstractShardDataSource.VisitAttribute.MASTER);
+    }
+  }
+
+  @Override
+  protected void doCleanupAfterCompletion(Object transaction) {
+
+    DataSource ds = getDataSource();
+    if (!(ds instanceof AbstractShardDataSource)) {
+      super.doCleanupAfterCompletion(transaction);
+      throw new DataSourceRoutingException("data source is not a VirtualDataSource");
+    }
+
+    AbstractShardDataSource vds = (AbstractShardDataSource) ds;
+    vds.clearShardKey();
+    vds.clearVisitAttribute();
+
+    super.doCleanupAfterCompletion(transaction);
+
+  }
+
+
+
+
+
 }
