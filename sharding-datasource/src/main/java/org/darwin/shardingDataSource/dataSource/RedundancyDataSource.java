@@ -178,4 +178,11 @@ public class RedundancyDataSource extends AbstractShardDataSource {
     return state;
   }
 
+  public long getCheckInterval() {
+    return checkInterval;
+  }
+
+  public void setCheckInterval(long checkInterval) {
+    this.checkInterval = checkInterval;
+  }
 }
