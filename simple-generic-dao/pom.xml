@@ -27,11 +27,11 @@
 	<distributionManagement>
 		<repository>
 			<id>nexus-releases</id>
-			<url>http://darwin-nexus.com:8081/nexus/content/repositories/releases/</url>
+			<url>http://darwin-nexus.com/nexus/content/repositories/releases/</url>
 		</repository>
 		<snapshotRepository>
 			<id>nexus-snapshots</id>
-			<url>http://darwin-nexus.com:8081/nexus/content/repositories/snapshots/</url>
+			<url>http://darwin-nexus.com/nexus/content/repositories/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
