@@ -7,13 +7,12 @@
 	<name>generic-base</name>
 	<packaging>pom</packaging>
 
-
 	<modules>
 		<module>../darwin-common</module>
 		<module>../idcenter</module>
 		<module>../sharding-datasource</module>
 		<module>../simple-generic-dao</module>
-		<module>../myweb</module>
+		<module>../generic-dao-sample</module>
   	</modules>
 
 	<properties>    
