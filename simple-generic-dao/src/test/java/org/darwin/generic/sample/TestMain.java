@@ -1,6 +1,5 @@
-/**
- * org.darwin.generic.sample.TestMain.java
- * created by Tianxin(tianjige@163.com) on 2015年6月9日 下午2:33:49
+/*
+ * TestMain.java created by Tianxin(tianjige@163.com) on 2015年6月9日 下午2:33:49
  */
 package org.darwin.generic.sample;
 
@@ -8,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.darwin.generic.sample.bo.Creative;
-import org.darwin.generic.sample.dao.CreativeDao;
 import org.darwin.generic.sample.dao.impl.CreativeDaoImpl;
 import org.darwin.genericDao.dao.impl.GenericDao;
 import org.springframework.dao.DataAccessException;
@@ -39,7 +37,7 @@ public class TestMain {
     dao.updateTitle("xxx");
   }
 
-  public static <DAO extends GenericDao<?, ?>> DAO getDao(Class<DAO> daoClass) {
+  private static <DAO extends GenericDao> DAO getDao(Class<DAO> daoClass) {
     try {
       DAO dao = daoClass.newInstance();
       dao.setJdbcTemplate(mockJdbcTemplate());
@@ -74,13 +72,7 @@ public class TestMain {
         return null;
       }
 
-      @Override
-      public int queryForInt(String sql, Object... args) throws DataAccessException {
-//        System.out.println(sql);
-        return 0;
-      }
     };
   }
-
 
 }
