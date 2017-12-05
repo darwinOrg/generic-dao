@@ -112,7 +112,6 @@
 	</dependencies>
 
 	<build>
-		<finalName>myweb</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>

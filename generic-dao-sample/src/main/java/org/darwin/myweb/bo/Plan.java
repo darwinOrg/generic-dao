@@ -1,6 +1,5 @@
-/**
- * org.darwin.myweb.bo.Plan.java
- * created by Tianxin(tianjige@163.com) on 2015年6月15日 上午11:19:56
+/*
+ * Plan.java created by Tianxin(tianjige@163.com) on 2015年6月15日 上午11:19:56
  */
 package org.darwin.myweb.bo;
 
@@ -12,8 +11,7 @@ import org.darwin.genericDao.bo.BaseObject;
 import org.darwin.tools.CreateTableHelper;
 
 /**
- * 测试用的plan对象
- * created by Tianxin on 2015年6月15日 上午11:19:56
+ * 测试用的 Plan 对象
  */
 @Table(db = "darwin", name = "plan", columnStyle = ColumnStyle.LOWER_CASE, shardCount = 2)
 public class Plan extends BaseObject<Integer> {
@@ -54,8 +52,6 @@ public class Plan extends BaseObject<Integer> {
     return addUser;
   }
 
-
-
   public void setAddUser(int addUser) {
     this.addUser = addUser;
   }
@@ -85,9 +81,11 @@ public class Plan extends BaseObject<Integer> {
   }
 
   /**
-   * @param userId
-   * @return
-   * created by Tianxin on 2015年6月15日 上午11:51:48
+   * 根据用户ID和用户名创建 Plan 对象
+   *
+   * @param userId 用户ID
+   * @param name   用户名
+   * @return 创建的 Plan 对象
    */
   public static Plan from(int userId, String name) {
     Plan plan = new Plan();
@@ -100,9 +98,10 @@ public class Plan extends BaseObject<Integer> {
     plan.setModUser(userId);
     return plan;
   }
-  
+
   public static void main(String[] args) {
     CreateTableHelper.generateCreateTableSQL(Plan.class);
     CreateTableHelper.generateCreateTableSQL(User.class);
   }
+
 }

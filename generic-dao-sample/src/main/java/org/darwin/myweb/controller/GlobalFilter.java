@@ -1,6 +1,5 @@
-/**
- * org.darwin.myweb.controller.GlobaFilter.java
- * created by Tianxin(tianjige@163.com) on 2015年6月15日 上午11:47:49
+/*
+ * GlobalFilter.java created by Tianxin(tianjige@163.com) on 2015年6月15日 上午11:47:49
  */
 package org.darwin.myweb.controller;
 
@@ -18,29 +17,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
- * created by Tianxin on 2015年6月15日 上午11:47:49
+ * 前置过滤器，用于设置分库的值到线程上下文
  */
 public class GlobalFilter implements Filter {
+
   /**
-   * 默认生成的该类的LOG记录器，使用slf4j组件。避免产生编译警告，使用protected修饰符。
+   * 默认生成的该类的LOG记录器，使用slf4j组件
    */
   protected final static Logger LOG = LoggerFactory.getLogger(GlobalFilter.class);
 
   public void init(FilterConfig filterConfig) throws ServletException {}
 
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-    ThreadContext.init();
     try {
       request.setCharacterEncoding("UTF-8");
       int userId = Integer.parseInt(request.getParameter("userid"));
+
+      ThreadContext.init();
       ThreadContext.put("shardingKey", userId);
       chain.doFilter(request, response);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.error("Do filter failed.", e);
+    } finally {
+      ThreadContext.clean();
     }
-    ThreadContext.clean();
   }
 
   public void destroy() {}
+
 }
