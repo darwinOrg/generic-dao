@@ -114,6 +114,46 @@ public class QueryStat implements Query {
     this.rows = rows;
   }
 
+  public QueryStat(List<String> toSumColumns, List<String> toAvgColumns, List<String> toMaxColumns, List<String> toMinColumns, List<String> otherColumns, Matches matches, Groups groups, Orders orders,
+                   String table) {
+    this(toSumColumns, toAvgColumns, toMaxColumns, toMinColumns, otherColumns, matches, groups, orders, table, 0, 0);
+  }
+
+  public QueryStat(List<String> toSumColumns, List<String> toAvgColumns, List<String> toMaxColumns, List<String> toMinColumns, List<String> otherColumns, Matches matches, Groups groups, Orders orders,
+                   String table, int offset, int rows) {
+    this(null, matches, groups, orders, table);
+
+    this.columns = new ArrayList<String>(5);
+    this.offset = offset;
+    this.rows = rows;
+
+    //添加统计列
+    if (!Utils.isEmpty(otherColumns)) {
+      columns.addAll(otherColumns);
+    }
+    //添加统计列
+    if (!Utils.isEmpty(toSumColumns)) {
+      for (String column : toSumColumns) {
+        columns.add(Utils.concat("sum(", column, ") as ", column));
+      }
+    }
+    if (!Utils.isEmpty(toAvgColumns)) {
+      for (String column : toAvgColumns) {
+        columns.add(Utils.concat("avg(", column, ") as ", column));
+      }
+    }
+    if (!Utils.isEmpty(toMaxColumns)) {
+      for (String column : toMaxColumns) {
+        columns.add(Utils.concat("max(", column, ") as ", column));
+      }
+    }
+    if (!Utils.isEmpty(toMinColumns)) {
+      for (String column : toMinColumns) {
+        columns.add(Utils.concat("min(", column, ") as ", column));
+      }
+    }
+  }
+
   public String getSQL() {
     StringBuilder sb = new StringBuilder(256);
     sb.append("select ");
