@@ -20,7 +20,6 @@ public class UserObject<KEY extends Serializable> extends BaseObject<KEY> {
   /**
    * 对象所属的用户的ID
    */
-  @Column(Columns.userId)
   private int userId;
 
   public int getUserId() {
