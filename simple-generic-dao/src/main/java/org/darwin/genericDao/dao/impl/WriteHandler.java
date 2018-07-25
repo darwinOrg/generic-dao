@@ -1,14 +1,10 @@
 /**
- * org.darwin.genericDao.query.QueryHandler.java
- * created by Tianxin(tianjige@163.com) on 2015年5月27日 下午6:46:45
+ * org.darwin.genericDao.query.QueryHandler.java created by Tianxin(tianjige@163.com) on 2015年5月27日
+ * 下午6:46:45
  */
 package org.darwin.genericDao.dao.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
 import org.darwin.common.utils.Utils;
 import org.darwin.genericDao.bo.BaseObject;
 import org.darwin.genericDao.dao.TableAware;
@@ -19,7 +15,7 @@ import org.darwin.genericDao.mapper.ColumnMapper;
  */
 public class WriteHandler<ENTITY> {
 
-  //私有化无参构造器
+  // 私有化无参构造器
   private WriteHandler() {}
 
 
@@ -37,41 +33,46 @@ public class WriteHandler<ENTITY> {
     List<String> insertColumns = new ArrayList<String>(mapperCount);
     List<String> updateColumns = new ArrayList<String>(mapperCount);
     List<String> allColumns = new ArrayList<String>(mapperCount);
+    Set<String> updateColumnSet = new HashSet<>(mapperCount * 4 / 3 + 1);
 
     Collection<ColumnMapper> mappers = columnMappers.values();
     for (ColumnMapper mapper : mappers) {
-      
-      //装装载对象的字段集
+
+      // 装装载对象的字段集
       allColumns.add(mapper.getSQLColumn());
-      if(mapper.isExtendColumn()){
+      if (mapper.isExtendColumn()) {
         continue;
       }
-      
-      //新增和修改的字段集
+
+      // 新增和修改的字段集
       insertColumns.add(mapper.getSQLColumn());
       if (mapper.isModifiable()) {
         updateColumns.add(mapper.getSQLColumn());
+        updateColumnSet.add(mapper.getSQLColumn());
       }
     }
 
-    initColumns(insertColumns, updateColumns, allColumns);
+    initColumns(insertColumns, updateColumns, allColumns, updateColumnSet);
   }
 
   /**
    * 初始化字段列表的设置
+   * 
    * @param insertColumns
    * @param updateColumns
    * @param allColumns
-   * created by Tianxin on 2015年6月1日 上午6:56:20
+   * @param updateColumnSet created by Tianxin on 2015年6月1日 上午6:56:20
    */
-  private void initColumns(List<String> insertColumns, List<String> updateColumns, List<String> allColumns) {
+  private void initColumns(List<String> insertColumns, List<String> updateColumns,
+      List<String> allColumns, Set<String> updateColumnSet) {
 
-    //普通的字段保存
+    // 普通的字段保存
     this.allColumns = allColumns;
-    this.insertColumns = insertColumns;
-    this.updateColumns = updateColumns;
+    this.insertColumns = insertColumns.toArray(new String[insertColumns.size()]);
+    this.updateColumns = updateColumns.toArray(new String[updateColumns.size()]);
+    this.updateColumnSet = updateColumnSet;
 
-    //构造insert语句的字段列表与展位符
+    // 构造insert语句的字段列表与展位符
     StringBuilder sInsertColumnBuilder = new StringBuilder(insertColumns.size() * 9);
     StringBuilder sInsertPHolderBuilder = new StringBuilder(insertColumns.size() * 2 + 2);
     for (String column : insertColumns) {
@@ -85,13 +86,14 @@ public class WriteHandler<ENTITY> {
   }
 
   private List<String> allColumns;
-  private List<String> updateColumns;
+  private String[] updateColumns;
+  private Set<String> updateColumnSet;
 
   /**
    * insert的SQL中参数的展位符——(?,?,?,?)
    */
   private String sInsertPlaceHolder;
-  private List<String> insertColumns;
+  private String[] insertColumns;
   private String sInsertColumns;
 
   private Map<String, ColumnMapper> columnMappers;
@@ -105,25 +107,24 @@ public class WriteHandler<ENTITY> {
    */
   public Object[] generateInsertParams(Collection<ENTITY> entities) {
 
-    ArrayList<Object> params = new ArrayList<Object>(insertColumns.size() * entities.size());
+    ArrayList<Object> params = new ArrayList<Object>(insertColumns.length * entities.size());
     for (ENTITY entity : entities) {
 
       if (entity == null) {
         continue;
       }
 
-      params.addAll(getParamsByColumns(insertColumns, entity));
+      params.addAll(getParamsByColumns(entity, insertColumns));
     }
     return params.toArray();
   }
 
   /**
    * @param params
-   * @param entity
-   *            created by Tianxin on 2015年5月27日 下午8:22:04
+   * @param entity created by Tianxin on 2015年5月27日 下午8:22:04
    */
-  private List<Object> getParamsByColumns(List<String> columns, ENTITY entity) {
-    ArrayList<Object> params = new ArrayList<Object>(columns.size() + 1);
+  private List<Object> getParamsByColumns(ENTITY entity, String...columns) {
+    ArrayList<Object> params = new ArrayList<Object>(columns.length + 1);
     for (String column : columns) {
       try {
         ColumnMapper cMapper = columnMappers.get(column);
@@ -147,6 +148,7 @@ public class WriteHandler<ENTITY> {
 
   /**
    * 生成insert语句
+   * 
    * @param entities
    * @param type 0为普通,1为replace,2为insert ignore
    * 
@@ -177,13 +179,23 @@ public class WriteHandler<ENTITY> {
    * @return created by Tianxin on 2015年5月27日 下午7:42:28
    */
   public Object[] generateUpdateParams(ENTITY entity) {
+    return generateUpdateParams(entity, updateColumns);
+  }
+  
+  /**
+   * 生成update的参数列表
+   * 
+   * @return created by Tianxin on 2015年5月27日 下午7:42:28
+   */
+  public Object[] generateUpdateParams(ENTITY entity, String...targetColumns) {
     if (entity instanceof BaseObject<?>) {
-      List<Object> params = getParamsByColumns(updateColumns, entity);
+      List<Object> params = getParamsByColumns(entity, targetColumns);
       params.add(((BaseObject<?>) entity).getId());
       return params.toArray();
     }
-
-    throw new RuntimeException(Utils.concat(entity.getClass().getSimpleName(), " 不是BaseObject的子类!"));
+    
+    throw new RuntimeException(
+        Utils.concat(entity.getClass().getSimpleName(), " 不是BaseObject的子类!"));
   }
 
   /**
@@ -192,9 +204,24 @@ public class WriteHandler<ENTITY> {
    * @return created by Tianxin on 2015年5月27日 下午7:44:14
    */
   public String generateUpdateSQL(ENTITY entity) {
+    return generateUpdateSQL(entity, updateColumns);
+  }
+
+  /**
+   *  生成update的SQL语句
+   *
+   * @return created by Tianxin on 2015年5月27日 下午7:44:14
+   */
+  public String generateUpdateSQL(ENTITY entity, String... targetColumns) {
     StringBuilder sb = new StringBuilder(512);
     sb.append("update ").append(tableAware.table()).append(" set ");
-    for (String column : updateColumns) {
+    for (String column : targetColumns) {
+      
+      //如果该字段是无效字段，则直接抛出错误
+      if (!updateColumnSet.contains(column)) {
+        throw new RuntimeException("column not exist! " + column);
+      }
+
       sb.append(column).append("=?,");
     }
     sb.setCharAt(sb.length() - 1, ' ');
@@ -203,8 +230,7 @@ public class WriteHandler<ENTITY> {
   }
 
   /**
-   * @return
-   * created by Tianxin on 2015年5月28日 下午5:22:32
+   * @return created by Tianxin on 2015年5月28日 下午5:22:32
    */
   public List<String> allColumns() {
     return this.allColumns;

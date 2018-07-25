@@ -7,10 +7,11 @@ package org.darwin.generic.sample.dao.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
-
 import org.darwin.generic.sample.bo.Creative;
 import org.darwin.generic.sample.dao.CreativeDao;
+import org.darwin.genericDao.bo.UserObject.Columns;
 import org.darwin.genericDao.dao.impl.GenericDao;
 import org.darwin.genericDao.operate.Matches;
 import org.darwin.genericDao.operate.Modifies;
@@ -33,7 +34,13 @@ public class CreativeDaoImpl extends GenericDao<Long, Creative> implements Creat
   //groupid=22 and unitid=-44
 
   public static void main(String[] args) {
-    new CreativeDaoImpl().findRecords();
+    
+    Creative c = new Creative();
+    c.setId(1L);
+    c.setAddTime(new Date());
+    c.setAddUser(1);
+//    new CreativeDaoImpl().createOnDuplicate(Arrays.asList(c, c, c), "user_id=values(user_id), add_user=3");
+    new CreativeDaoImpl().update(Arrays.asList(c, c, c), Columns.userId, "add_user", "add_time");
   }
 
   /**

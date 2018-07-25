@@ -5,6 +5,7 @@
 package org.darwin.genericDao.bo;
 
 import java.io.Serializable;
+import org.darwin.genericDao.annotations.Column;
 
 /**
  * 从属于某一个用户的业务模型
@@ -19,6 +20,7 @@ public class UserObject<KEY extends Serializable> extends BaseObject<KEY> {
   /**
    * 对象所属的用户的ID
    */
+  @Column(Columns.userId)
   private int userId;
 
   public int getUserId() {

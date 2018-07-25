@@ -139,6 +139,22 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
     count += createCore(batch);
     return count;
   }
+  
+  /**
+   * 新建一批对象。如果记录数超过10000条，将会分批进行插入
+   * @param entities
+   * @param duplicateOperation 字段值为“a_column=xxx , b_column=values(b_column)”在重复时设定a字段为xxx，设置b字段为刚刚要插入的值
+   * @return
+   */
+  public int createOnDuplicate(Collection<ENTITY> entities, String duplicateOperation) {
+    if (Utils.isEmpty(entities)) {
+      return 0;
+    }
+    String sql = writeHandler.generateInsertSQL(entities) + " on duplicate key update " + duplicateOperation;
+    Object[] args = writeHandler.generateInsertParams(entities);
+    LOG.info(entities.size() < maxCreateLogCount ? Utils.toLogSQL(sql, args) : sql);
+    return executeBySQL(sql, args);
+  }
 
   /**
    * 执行insert动作的操作

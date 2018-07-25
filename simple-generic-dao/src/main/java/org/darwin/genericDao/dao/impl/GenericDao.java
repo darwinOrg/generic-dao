@@ -206,6 +206,23 @@ public class GenericDao<KEY extends Serializable, ENTITY extends BaseObject<KEY>
   }
 
   /**
+   * update一条记录
+   * @param entity
+   * @param targetColumns   要更新的指定字段
+   * @return
+   */
+  public boolean update(ENTITY entity, String...targetColumns) {
+    if (entity == null) {
+      return false;
+    }
+    String sql = writeHandler.generateUpdateSQL(entity, targetColumns);
+    Object[] params = writeHandler.generateUpdateParams(entity, targetColumns);
+
+    LOG.info(Utils.toLogSQL(sql, params));
+    return executeBySQL(sql, params) >= 1;
+  }
+
+  /**
    * 批量update
    */
   public int update(Collection<ENTITY> entities) {
@@ -233,6 +250,45 @@ public class GenericDao<KEY extends Serializable, ENTITY extends BaseObject<KEY>
       }
     });
 
+    // 计算影响的数据条数
+    int updatedCount = 0;
+    for (int i : results) {
+      updatedCount += i;
+    }
+    return updatedCount;
+  }
+  
+  /**
+   * 批量update
+   * @param entities
+   * @param targetColumns 要修改的字段
+   * @return
+   */
+  public int update(Collection<ENTITY> entities, final String...targetColumns) {
+    
+    // 如果为空或这个集合都是空对象，则不更新
+    final List<ENTITY> list = Utils.trimEntities(entities);
+    if (list == null || list.size() == 0) {
+      return 0;
+    }
+    
+    String sql = writeHandler.generateUpdateSQL(list.get(0), targetColumns);
+    LOG.info(sql);
+    int[] results = jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+      
+      public void setValues(PreparedStatement ps, int index) throws SQLException {
+        Object[] params = writeHandler.generateUpdateParams(list.get(index), targetColumns);
+        int i = 1;
+        for (Object param : params) {
+          ps.setObject(i++, param);
+        }
+      }
+      
+      public int getBatchSize() {
+        return list.size();
+      }
+    });
+    
     // 计算影响的数据条数
     int updatedCount = 0;
     for (int i : results) {
