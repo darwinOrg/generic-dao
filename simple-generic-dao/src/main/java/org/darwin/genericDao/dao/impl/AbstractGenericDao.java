@@ -152,7 +152,6 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
     }
     String sql = writeHandler.generateInsertSQL(entities) + " on duplicate key update " + duplicateOperation;
     Object[] args = writeHandler.generateInsertParams(entities);
-    LOG.info(entities.size() < maxCreateLogCount ? Utils.toLogSQL(sql, args) : sql);
     return executeBySQL(sql, args);
   }
 
@@ -169,7 +168,6 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
     }
     String sql = writeHandler.generateInsertSQL(entities);
     Object[] args = writeHandler.generateInsertParams(entities);
-    LOG.info(entities.size() < maxCreateLogCount ? Utils.toLogSQL(sql, args) : sql);
     return executeBySQL(sql, args);
   }
 
@@ -194,7 +192,6 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
     }
     String sql = writeHandler.generateInsertSQL(entities, type);
     Object[] args = writeHandler.generateInsertParams(entities);
-    LOG.info(entities.size() < maxCreateLogCount ? Utils.toLogSQL(sql, args) : sql);
     return executeBySQL(sql, args);
   }
 
@@ -229,7 +226,6 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
     QueryDelete query = new QueryDelete(matches, table());
     String sql = query.getSQL();
     Object[] args = query.getParams();
-    LOG.info(Utils.toLogSQL(sql, args));
     return executeBySQL(sql, args);
   }
 
@@ -244,7 +240,6 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
     QueryModify modify = new QueryModify(modifies, matches, table());
     String sql = modify.getSQL();
     Object[] args = modify.getParams();
-    LOG.info(Utils.toLogSQL(sql, args));
     return executeBySQL(sql, args);
   }
 
@@ -340,7 +335,6 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
 
     String sql = query.getSQL();
     Object[] params = query.getParams();
-    LOG.info(Utils.toLogSQL(sql, params));
 
     List<E> es = findBySQL(eclass, sql, params);
     if (es == null || es.size() == 0) {
@@ -402,7 +396,6 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
     QuerySelect query = new QuerySelect(choozenColumns, matches, orders, table(), offset, rows);
     String sql = query.getSQL();
     Object[] params = query.getParams();
-    LOG.info(Utils.toLogSQL(sql, params));
     return findBySQL(entityClass, sql, params);
   }
 
@@ -435,6 +428,7 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
    *         created by Tianxin on 2015年8月4日 上午10:49:02
    */
   protected <E> List<E> findBySQL(Class<E> eClass, String sql, Object... params) {
+    LOG.info(Utils.toLogSQL(sql, params));
     return jdbcTemplate.query(sql, params, BasicMappers.getEntityMapper(eClass, sql));
   }
 
@@ -505,7 +499,6 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
 
     String sql = query.getSQL();
     Object[] params = query.getParams();
-    LOG.info(Utils.toLogSQL(sql, params));
     return findBySQL(eClass, sql, params);
   }
 
@@ -521,7 +514,6 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
 
     String sql = query.getSQL();
     Object[] params = query.getParams();
-    LOG.info(Utils.toLogSQL(sql, params));
     return findBySQL(eClass, sql, params);
   }
 
@@ -592,7 +584,6 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
    * @return
    */
   protected int countBySQL(String sql, Object[] params) {
-    LOG.info(Utils.toLogSQL(sql, params));
     Integer count = findOne(Integer.class, sql, params);
     return count == null ? 0 : count;
   }

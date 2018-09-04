@@ -71,7 +71,11 @@
 			<artifactId>sharding-datasource</artifactId>
 			<version>0.0.8-SNAPSHOT</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.darwin</groupId>
+			<artifactId>darwin-common</artifactId>
+			<version>0.0.6-RELEASE</version>
+		</dependency>
 		<!-- datasource -->
 		<dependency>
 			<groupId>com.mchange</groupId>
