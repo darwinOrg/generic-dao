@@ -136,6 +136,8 @@ public class WriteHandler<ENTITY> {
     }
     return params;
   }
+  
+  private String defaultInsertSQL = null;
 
   /**
    * 生成insert语句
@@ -143,7 +145,10 @@ public class WriteHandler<ENTITY> {
    * @return created by Tianxin on 2015年5月27日 下午7:44:14
    */
   public String generateInsertSQL(Collection<ENTITY> entities) {
-    return generateInsertSQL(entities, 0);
+    if(defaultInsertSQL == null) {
+      defaultInsertSQL = generateInsertSQL(entities, 0);
+    }
+    return defaultInsertSQL;
   }
 
   /**
@@ -197,6 +202,8 @@ public class WriteHandler<ENTITY> {
     throw new RuntimeException(
         Utils.concat(entity.getClass().getSimpleName(), " 不是BaseObject的子类!"));
   }
+  
+  private String defaultUpdateSQL = null;
 
   /**
    * 生成update的SQL语句
@@ -204,7 +211,10 @@ public class WriteHandler<ENTITY> {
    * @return created by Tianxin on 2015年5月27日 下午7:44:14
    */
   public String generateUpdateSQL(ENTITY entity) {
-    return generateUpdateSQL(entity, updateColumns);
+    if(defaultUpdateSQL == null) {
+        defaultUpdateSQL = generateUpdateSQL(entity, updateColumns);
+    }
+    return defaultUpdateSQL;
   }
 
   /**

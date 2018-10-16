@@ -8,12 +8,13 @@ import java.util.Date;
 import org.darwin.genericDao.annotations.Table;
 import org.darwin.genericDao.annotations.enums.ColumnStyle;
 import org.darwin.genericDao.bo.BaseObject;
+import org.darwin.myweb.dao.Test;
 import org.darwin.tools.CreateTableHelper;
 
 /**
  * 测试用的 Plan 对象
  */
-@Table(db = "darwin", name = "plan", columnStyle = ColumnStyle.LOWER_CASE, shardCount = 2)
+@Table(db = "darwin", name = "plan", columnStyle = ColumnStyle.LOWER_CASE, shardCount = 2, forceShardRuleClass = Test.class)
 public class Plan extends BaseObject<Integer> {
 
   private String name;

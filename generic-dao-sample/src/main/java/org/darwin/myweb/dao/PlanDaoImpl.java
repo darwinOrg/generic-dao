@@ -27,5 +27,7 @@ public class PlanDaoImpl extends GenericDao<Integer, Plan> implements PlanDao {
   public List<Plan> findByUser(int userId) {
     return find(Columns.userId, userId);
   }
+  
+  
 
 }
