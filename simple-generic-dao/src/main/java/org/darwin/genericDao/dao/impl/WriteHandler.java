@@ -145,10 +145,15 @@ public class WriteHandler<ENTITY> {
    * @return created by Tianxin on 2015年5月27日 下午7:44:14
    */
   public String generateInsertSQL(Collection<ENTITY> entities) {
-    if(defaultInsertSQL == null) {
+    if(defaultInsertSQL == null && entities.size() == 1) {
       defaultInsertSQL = generateInsertSQL(entities, 0);
     }
-    return defaultInsertSQL;
+    
+    if(entities.size() == 1) {    
+      return defaultInsertSQL;
+    }
+    
+    return generateInsertSQL(entities, 0);
   }
 
   /**
