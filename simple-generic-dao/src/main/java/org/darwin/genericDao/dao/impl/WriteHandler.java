@@ -4,7 +4,14 @@
  */
 package org.darwin.genericDao.dao.impl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.darwin.common.utils.Utils;
 import org.darwin.genericDao.bo.BaseObject;
 import org.darwin.genericDao.dao.TableAware;
@@ -137,7 +144,7 @@ public class WriteHandler<ENTITY> {
     return params;
   }
   
-  private String defaultInsertSQL = null;
+  private Map<String, String> defaultInsertSQLMap = new ConcurrentHashMap<String, String>();
 
   /**
    * 生成insert语句
@@ -145,12 +152,15 @@ public class WriteHandler<ENTITY> {
    * @return created by Tianxin on 2015年5月27日 下午7:44:14
    */
   public String generateInsertSQL(Collection<ENTITY> entities) {
-    if(defaultInsertSQL == null && entities.size() == 1) {
-      defaultInsertSQL = generateInsertSQL(entities, 0);
-    }
-    
-    if(entities.size() == 1) {    
-      return defaultInsertSQL;
+      
+    if(entities.size() == 1) {
+      String table = tableAware.table();
+      String sql = defaultInsertSQLMap.get(table);
+      if(sql == null) {
+        sql = generateInsertSQL(entities, 0);
+        defaultInsertSQLMap.put(table, sql);
+      }
+      return sql;
     }
     
     return generateInsertSQL(entities, 0);
@@ -208,7 +218,7 @@ public class WriteHandler<ENTITY> {
         Utils.concat(entity.getClass().getSimpleName(), " 不是BaseObject的子类!"));
   }
   
-  private String defaultUpdateSQL = null;
+  private Map<String, String> defaultUpdateSQLMap = new ConcurrentHashMap<String, String>();
 
   /**
    * 生成update的SQL语句
@@ -216,10 +226,14 @@ public class WriteHandler<ENTITY> {
    * @return created by Tianxin on 2015年5月27日 下午7:44:14
    */
   public String generateUpdateSQL(ENTITY entity) {
-    if(defaultUpdateSQL == null) {
-        defaultUpdateSQL = generateUpdateSQL(entity, updateColumns);
+      
+    String table = tableAware.table();
+    String sql = defaultUpdateSQLMap.get(table);
+    if(sql == null) {
+      sql = generateUpdateSQL(entity, updateColumns);
+      defaultUpdateSQLMap.put(table, sql);
     }
-    return defaultUpdateSQL;
+    return sql;
   }
 
   /**
