@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,7 +21,10 @@ import org.darwin.genericDao.annotations.NullTableShardPolicy;
 import org.darwin.genericDao.annotations.Sequence;
 import org.darwin.genericDao.annotations.Table;
 import org.darwin.genericDao.annotations.TableShardPolicy;
+import org.darwin.genericDao.annotations.UseQueryColumnFormat;
 import org.darwin.genericDao.annotations.enums.ColumnBuilder;
+import org.darwin.genericDao.annotations.enums.QueryColumnFormat;
+import org.darwin.genericDao.dao.ColumnNameConverter;
 import org.darwin.genericDao.dao.TableAware;
 import org.darwin.genericDao.mapper.BasicMappers;
 import org.darwin.genericDao.mapper.ColumnMapper;
@@ -51,20 +55,26 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
   protected final static ConcurrentMap<Class<?extends TableShardPolicy>,TableShardPolicy>
           TABLE_SHARD_POLICY_CONCURRENT_MAP =
           new ConcurrentHashMap<>();
+
+  private  Map<String, ColumnMapper> fieldMappers;
+
+  protected final Class<ENTITY> entityClass;
+  protected JdbcTemplate jdbcTemplate;
+  protected final WriteHandler<ENTITY> writeHandler;
+  protected final Map<String, ColumnMapper> columnMappers;
+  protected final ColumnNameConverter columnNameConverter;
+
+  protected final Table table;
+  protected final Sequence seqConfig;
+
   /**
    * 构造函数
    */
   public AbstractGenericDao() {
-
-    Class<ENTITY> entityClass = GenericDaoUtils.getGenericEntityClass(this.getClass(), AbstractGenericDao.class, 0);
-
-    table = GenericDaoUtils.getTable(entityClass);
-    seqConfig = GenericDaoUtils.getSequence(entityClass);
-
-    this.entityClass = entityClass;
-    this.columnMappers = GenericDaoUtils.generateColumnMappers(entityClass, table.columnStyle());
-    this.writeHandler = new WriteHandler<ENTITY>(columnMappers, this);
+    this((Class<ENTITY>) GenericDaoUtils.getGenericEntityClass(AbstractGenericDao.class, AbstractGenericDao.class, 0));
   }
+
+
 
   public AbstractGenericDao(Class<ENTITY> entityClass) {
     table = GenericDaoUtils.getTable(entityClass);
@@ -72,16 +82,68 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
 
     this.entityClass = entityClass;
     this.columnMappers = GenericDaoUtils.generateColumnMappers(entityClass, table.columnStyle());
+    this.fieldMappers = buildFieldColumnsMapper(columnMappers);
     this.writeHandler = new WriteHandler<ENTITY>(columnMappers, this);
+
+    columnNameConverter = createColumnNameConverter(extractSQLColumnStyle());
   }
 
-  protected Class<ENTITY> entityClass;
-  protected JdbcTemplate jdbcTemplate;
-  protected WriteHandler<ENTITY> writeHandler;
-  protected Map<String, ColumnMapper> columnMappers;
 
-  protected Table table;
-  protected Sequence seqConfig;
+  private ColumnNameConverter createColumnNameConverter(final QueryColumnFormat sqlColumnStyle) {
+    return new ColumnNameConverter() {
+
+      @Override
+      public QueryColumnFormat getColumnFormat() {
+        return sqlColumnStyle;
+      }
+
+      public String convert(String name) {
+        switch (sqlColumnStyle) {
+          case DB_COLUMN_NAME:
+            return name;
+          case POJO_FIELD_NAME: {
+            ColumnMapper columnMapper = fieldMappers.get(name);
+            if (columnMapper == null) {
+              throw new RuntimeException(
+                      String.format("expect a pojo field of name:%s for %s.%s,but not exist.", name, table.db(), table.name()));
+            }
+            return columnMapper.getColumn();
+          }
+          case MIX: {
+            ColumnMapper columnMapper = fieldMappers.get(name);
+            if (columnMapper != null) {
+              return columnMapper.getColumn();
+            }
+            return name;
+          }
+          default:
+            return name;
+        }
+      }
+    };
+  }
+
+  private QueryColumnFormat extractSQLColumnStyle() {
+    Class<?> clazz = this.getClass();
+
+    while (!clazz.equals(AbstractGenericDao.class)) {
+      UseQueryColumnFormat usingSQLColumnStyle = clazz.getAnnotation(UseQueryColumnFormat.class);
+      if (usingSQLColumnStyle != null) {
+        return usingSQLColumnStyle.value();
+      }
+      clazz = clazz.getSuperclass();
+    }
+
+    return QueryColumnFormat.DB_COLUMN_NAME;
+  }
+
+  private Map<String, ColumnMapper> buildFieldColumnsMapper(Map<String, ColumnMapper> rawColumnMappers) {
+    Map<String, ColumnMapper> mapperMap = new HashMap<String, ColumnMapper>();
+    for (Map.Entry<String, ColumnMapper> entry : rawColumnMappers.entrySet()) {
+      mapperMap.put(entry.getValue().getFieldName(), entry.getValue());
+    }
+    return mapperMap;
+  }
 
   public String table() {
     Object shardKey = ThreadContext.getShardingKey();
@@ -224,7 +286,7 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
    */
   protected int delete(Matches matches) {
     QueryDelete query = new QueryDelete(matches, table());
-    String sql = query.getSQL();
+    String sql = query.getSQL(columnNameConverter);
     Object[] args = query.getParams();
     return executeBySQL(sql, args);
   }
@@ -238,7 +300,7 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
    */
   protected int update(Modifies modifies, Matches matches) {
     QueryModify modify = new QueryModify(modifies, matches, table());
-    String sql = modify.getSQL();
+    String sql = modify.getSQL(columnNameConverter);
     Object[] args = modify.getParams();
     return executeBySQL(sql, args);
   }
@@ -333,7 +395,7 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
     List<String> choozenColumns = Arrays.asList(columns);
     QuerySelect query = new QuerySelect(choozenColumns, matches, orders, table(), 0, 1);
 
-    String sql = query.getSQL();
+    String sql = query.getSQL(columnNameConverter);
     Object[] params = query.getParams();
 
     List<E> es = findBySQL(eclass, sql, params);
@@ -394,7 +456,7 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
   protected List<ENTITY> pageColumns(Matches matches, Orders orders, int offset, int rows, String... columns) {
     List<String> choozenColumns = Arrays.asList(columns);
     QuerySelect query = new QuerySelect(choozenColumns, matches, orders, table(), offset, rows);
-    String sql = query.getSQL();
+    String sql = query.getSQL(columnNameConverter);
     Object[] params = query.getParams();
     return findBySQL(entityClass, sql, params);
   }
@@ -470,7 +532,7 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
       String column, int offset, int rows) {
     List<String> columns = Arrays.asList(column);
     QuerySelect query = new QuerySelect(columns, matches, orders, table(), offset, rows);
-    String sql = query.getSQL();
+    String sql = query.getSQL(columnNameConverter);
     Object[] params = query.getParams();
     return findBySQL(eClass, sql, params);
   }
@@ -497,7 +559,7 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
       }
     }
 
-    String sql = query.getSQL();
+    String sql = query.getSQL(columnNameConverter);
     Object[] params = query.getParams();
     return findBySQL(eClass, sql, params);
   }
@@ -512,7 +574,7 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
    */
   protected <E> List<E> find(Query query, Class<E> eClass) {
 
-    String sql = query.getSQL();
+    String sql = query.getSQL(columnNameConverter);
     Object[] params = query.getParams();
     return findBySQL(eClass, sql, params);
   }
@@ -544,7 +606,7 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
   protected int count(Matches matches) {
     List<String> columns = Arrays.asList("count(1)");
     QuerySelect query = new QuerySelect(columns, matches, null, table());
-    String sql = query.getSQL();
+    String sql = query.getSQL(columnNameConverter);
     Object[] params = query.getParams();
     return countBySQL(sql, params);
   }
@@ -571,7 +633,7 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
   protected int countDistinct(Matches matches, String... targetColumns) {
     Query query = new QueryDistinctCount(table(), matches, targetColumns);
 
-    String sql = query.getSQL();
+    String sql = query.getSQL(columnNameConverter);
     Object[] params = query.getParams();
     return countBySQL(sql, params);
   }

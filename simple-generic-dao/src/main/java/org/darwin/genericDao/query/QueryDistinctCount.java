@@ -5,6 +5,7 @@
 package org.darwin.genericDao.query;
 
 import org.darwin.common.utils.Utils;
+import org.darwin.genericDao.dao.ColumnNameConverter;
 import org.darwin.genericDao.operate.Matches;
 
 
@@ -29,18 +30,19 @@ public class QueryDistinctCount implements Query {
     this.targetColumns = targetColumns;
   }
 
-  public String getSQL() {
+  @Override
+  public String getSQL(ColumnNameConverter columnNameConverter) {
     StringBuilder sb = new StringBuilder();
     sb.append("select count(distinct ");
 
     for (String column : targetColumns) {
-      sb.append(column).append(',');
+      sb.append(columnNameConverter.convert(column)).append(',');
     }
     sb.setCharAt(sb.length() - 1, ')');
     sb.append(" from ").append(table);
 
     if (matches != null && !matches.isEmpty()) {
-      sb.append(" where ").append(matches.getOperate());
+      sb.append(" where ").append(matches.getOperate(columnNameConverter));
     }
     return sb.toString();
   }

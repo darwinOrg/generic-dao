@@ -4,6 +4,7 @@
  */
 package org.darwin.genericDao.annotations.enums;
 
+
 /**
  * 默认的几种统计类型
  * created by Tianxin on 2015年6月3日 下午1:55:45
@@ -20,5 +21,4 @@ public enum Type {
   public String value() {
     return this.value;
   }
-
 }

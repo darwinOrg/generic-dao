@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.darwin.common.GenericDaoUtils;
 import org.darwin.common.utils.Utils;
@@ -24,9 +26,9 @@ public class BasicMappers {
   /**
    * 将N个类各自的映射关系做一个map
    */
-  private static Map<Class<?>, Map<String, ColumnMapper>> columnMappersMap = Utils.newMap(64);
+  private static ConcurrentMap<Class<?>, Map<String, ColumnMapper>> columnMappersMap = new ConcurrentHashMap<>(64 * 4 /3);
 
-  private static Map<Class<?>, Class<?>> entityKeyClassMap = Utils.newMap(16);
+  private static ConcurrentHashMap<Class<?>, Class<?>> entityKeyClassMap = new ConcurrentHashMap<>(16 * 4 /3);
 
   public static <ENTITY> List<ColumnMapper> getMappers(Class<?> entityClass) {
 

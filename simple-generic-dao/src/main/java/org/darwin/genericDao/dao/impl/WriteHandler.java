@@ -6,7 +6,6 @@ package org.darwin.genericDao.dao.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +18,10 @@ import org.darwin.genericDao.mapper.ColumnMapper;
 
 /**
  * created by Tianxin on 2015年5月27日 下午6:46:45
+ * modified bye hexiufeng, 这个类只在内部使用，无需定义成 public
  */
-public class WriteHandler<ENTITY> {
+class WriteHandler<ENTITY> {
+  private static final String[] OPERATES = new String[] {"insert", "replace", "insert ignore"};
 
   // 私有化无参构造器
   private WriteHandler() {}
@@ -28,7 +29,7 @@ public class WriteHandler<ENTITY> {
 
   /**
    * @param columnMappers
-   * @param configKeeper
+   * @param tableAware
    */
   public WriteHandler(Map<String, ColumnMapper> columnMappers, TableAware tableAware) {
 
@@ -127,8 +128,10 @@ public class WriteHandler<ENTITY> {
   }
 
   /**
-   * @param params
-   * @param entity created by Tianxin on 2015年5月27日 下午8:22:04
+   * @param entity
+   * @param columns
+   *
+   * created by Tianxin on 2015年5月27日 下午8:22:04
    */
   private List<Object> getParamsByColumns(ENTITY entity, String...columns) {
     ArrayList<Object> params = new ArrayList<Object>(columns.length + 1);
@@ -176,13 +179,13 @@ public class WriteHandler<ENTITY> {
    */
   public String generateInsertSQL(Collection<ENTITY> entities, int type) {
 
-    String[] operates = new String[] {"insert", "replace", "insert ignore"};
-    if (type >= operates.length || type < 0) {
+
+    if (type >= OPERATES.length || type < 0) {
       throw new RuntimeException("不是合法的type!");
     }
 
     StringBuilder sb = new StringBuilder(512);
-    sb.append(operates[type]).append(" into ").append(tableAware.table());
+    sb.append(OPERATES[type]).append(" into ").append(tableAware.table());
     sb.append(' ').append(sInsertColumns).append(" values ");
     for (ENTITY entity : entities) {
       if (entity != null) {

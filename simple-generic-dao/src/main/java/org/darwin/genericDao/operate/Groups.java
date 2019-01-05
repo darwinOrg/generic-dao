@@ -4,6 +4,8 @@
  */
 package org.darwin.genericDao.operate;
 
+import org.darwin.genericDao.dao.ColumnNameConverter;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,10 +18,10 @@ public class Groups implements Operate {
 
   private Groups() {}
 
-  public String getOperate() {
+  public String getOperate(ColumnNameConverter columnNameConverter) {
     StringBuilder sb = new StringBuilder(groups.size() * 10);
     for (String group : groups) {
-      sb.append(group).append(',');
+      sb.append(columnNameConverter.convert(group)).append(',');
     }
     sb.deleteCharAt(sb.length() - 1);
     return sb.toString();

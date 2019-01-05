@@ -22,17 +22,34 @@ import org.darwin.genericDao.mapper.jdbc.TypeFetcher;
  */
 public class ColumnMapper {
 
-  //私有化构造函数
-  private ColumnMapper() {}
+  /**
+   * 实体中反射的信息
+   */
+  private Method getter;
+  private Method setter;
+  private TypeFetcher fetcher;
+  private Class<?> fieldType;
+
+  /**
+   * 数据库中的字段信息
+   */
+  private Column annotation;
+  private String fieldName;
+  private String sqlColumn;
+  private StatType type;
 
   /**
    * 映射规则
-   * @param sqlColumn
+   *
    * @param getter
    * @param setter
+   * @param fieldType
+   * @param annotation
+   * @param columnStyle
+   * @param type
+   * @param keyColumn
    */
   public ColumnMapper(Method getter, Method setter, Class<?> fieldType, Column annotation, ColumnStyle columnStyle, StatType type, String keyColumn) {
-    this();
     this.type = type;
     this.getter = getter;
     this.setter = setter;
@@ -40,22 +57,29 @@ public class ColumnMapper {
     this.fieldType = getter.getReturnType();
 
     this.annotation = annotation;
+    fieldName = generateFieldName(setter.getName());
     if (keyColumn != null) {
       this.sqlColumn = keyColumn;
-    } else if (annotation != null) {
-      this.sqlColumn = annotation.value();
-    } else {
-      String fieldName = generateFieldName(setter.getName());
-      columnStyle = columnStyle == null ? ColumnStyle.JAVA_TO_MYSQL : columnStyle;
-      this.sqlColumn = columnStyle.convert(fieldName);
+      return;
     }
+    if (annotation != null) {
+      this.sqlColumn = annotation.value();
+      return;
+    }
+
+    columnStyle = columnStyle == null ? ColumnStyle.JAVA_TO_MYSQL : columnStyle;
+    this.sqlColumn = columnStyle.convert(fieldName);
   }
 
   /**
    * 映射规则
-   * @param sqlColumn
+   *
    * @param getter
    * @param setter
+   * @param fieldType
+   * @param annotation
+   * @param columnStyle
+   * @param type
    */
   public ColumnMapper(Method getter, Method setter, Class<?> fieldType, Column annotation, ColumnStyle columnStyle, StatType type) {
     this(getter, setter, fieldType, annotation, columnStyle, type, null);
@@ -74,20 +98,10 @@ public class ColumnMapper {
     return sb.toString();
   }
 
-  /**
-   * 实体中反射的信息
-   */
-  private Method getter;
-  private Method setter;
-  private TypeFetcher fetcher;
-  private Class<?> fieldType;
 
-  /**
-   * 数据库中的字段信息
-   */
-  private Column annotation;
-  private String sqlColumn;
-  private StatType type;
+  public String getFieldName() {
+    return fieldName;
+  }
 
   /**
    * 一般情况与getColumn的结果相同，当对应的是statdao中的扩展字段时，这里返回的是拼到SQL里面的字段

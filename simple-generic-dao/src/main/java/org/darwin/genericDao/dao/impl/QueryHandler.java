@@ -16,7 +16,9 @@ import org.darwin.genericDao.mapper.ColumnMapper;
 
 /**
  * created by Tianxin on 2015年5月27日 下午6:46:45
+ * modified by hexiufeng, 这个类没有地方使用，未来需要删除掉
  */
+@Deprecated
 public class QueryHandler<KEY extends Serializable, ENTITY extends BaseObject<KEY>> {
 
   //私有化无参构造器
@@ -25,7 +27,7 @@ public class QueryHandler<KEY extends Serializable, ENTITY extends BaseObject<KE
 
   /**
    * @param columnMappers
-   * @param configKeeper
+   * @param tableAware
    */
   public QueryHandler(Map<String, ColumnMapper> columnMappers, TableAware tableAware) {
 
@@ -117,7 +119,7 @@ public class QueryHandler<KEY extends Serializable, ENTITY extends BaseObject<KE
   }
 
   /**
-   * @param params
+   * @param columns
    * @param entity
    *            created by Tianxin on 2015年5月27日 下午8:22:04
    */

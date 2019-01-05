@@ -6,6 +6,7 @@ package org.darwin.genericDao.query;
 
 import java.util.List;
 
+import org.darwin.genericDao.dao.ColumnNameConverter;
 import org.darwin.genericDao.operate.Matches;
 import org.darwin.genericDao.operate.Modifies;
 
@@ -44,12 +45,13 @@ public class QueryModify implements Query {
   private String table;
   private int rows;
 
-  public String getSQL() {
+  @Override
+  public String getSQL(ColumnNameConverter columnNameConverter) {
     StringBuilder sb = new StringBuilder(512);
     sb.append("update ").append(table).append(" set ");
-    sb.append(modifies.getOperate());
+    sb.append(modifies.getOperate(columnNameConverter));
     if (matches != null && !matches.isEmpty()) {
-      sb.append(" where ").append(matches.getOperate());
+      sb.append(" where ").append(matches.getOperate(columnNameConverter));
     }
 
     if (rows > 0) {

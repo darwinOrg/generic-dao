@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.darwin.common.utils.Utils;
+import org.darwin.genericDao.dao.ColumnNameConverter;
 import org.darwin.genericDao.operate.Groups;
 import org.darwin.genericDao.operate.HintCtx;
 import org.darwin.genericDao.operate.Matches;
@@ -17,6 +18,7 @@ import org.darwin.genericDao.operate.Orders;
  * created by Tianxin on 2015年6月3日 下午3:27:00
  */
 public class QueryStat implements Query {
+  private static final String[] OPERATES = new String[] {"min(", "max(", "sum(", "avg("};
 
   private List<String> columns;
   private String table;
@@ -154,7 +156,8 @@ public class QueryStat implements Query {
     }
   }
 
-  public String getSQL() {
+  @Override
+  public String getSQL(ColumnNameConverter columnNameConverter) {
     StringBuilder sb = new StringBuilder(256);
     sb.append("select ");
     for (String column : columns) {
@@ -170,13 +173,13 @@ public class QueryStat implements Query {
     }
 
     if (matches != null && !matches.isEmpty()) {
-      sb.append(" where ").append(matches.getOperate());
+      sb.append(" where ").append(matches.getOperate(columnNameConverter));
     }
     if (groups != null && !groups.isEmpty()) {
-      sb.append(" group by ").append(groups.getOperate());
+      sb.append(" group by ").append(groups.getOperate(columnNameConverter));
     }
     if (orders != null && !orders.isEmpty()) {
-      sb.append(" order by ").append(orders.getOperate());
+      sb.append(" order by ").append(orders.getOperate(columnNameConverter));
     }
     if (rows != 0) {
       sb.append(" limit ").append(offset).append(',').append(rows);
@@ -211,10 +214,10 @@ public class QueryStat implements Query {
     }
 
     //没有group by时，并且字段中有sum，min，max，avg等
-    String[] operates = new String[] {"min(", "max(", "sum(", "avg("};
+
     for (String column : columns) {
       column = column.toLowerCase();
-      for (String operate : operates) {
+      for (String operate : OPERATES) {
         if (column.startsWith(operate)) {
           return true;
         }

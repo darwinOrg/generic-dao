@@ -4,6 +4,8 @@
  */
 package org.darwin.genericDao.operate;
 
+import org.darwin.genericDao.dao.ColumnNameConverter;
+
 import java.util.List;
 
 /**
@@ -13,9 +15,11 @@ public interface Operate {
 
   /**
    * 该操作对应的SQL中的操作字符串
+   * @param columnNameConverter
    * created by Tianxin on 2015年5月27日 下午2:40:24
+   * modified by hexiufeng to support fieldName as query column name
    */
-  String getOperate();
+  String getOperate(ColumnNameConverter columnNameConverter);
 
   /**
    * 该操作在SQL执行时的param是哪些

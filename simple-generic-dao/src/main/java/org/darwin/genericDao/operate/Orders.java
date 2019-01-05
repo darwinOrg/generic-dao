@@ -4,6 +4,8 @@
  */
 package org.darwin.genericDao.operate;
 
+import org.darwin.genericDao.dao.ColumnNameConverter;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,10 +54,11 @@ public class Orders implements Operate {
     return this;
   }
 
-  public String getOperate() {
+  @Override
+  public String getOperate(ColumnNameConverter columnNameConverter) {
     StringBuilder sb = new StringBuilder(10 * orders.size());
     for (Order order : orders) {
-      sb.append(order.getOperate()).append(',');
+      sb.append(order.getOperate(columnNameConverter)).append(',');
     }
     sb.deleteCharAt(sb.length() - 1);
     return sb.toString();
