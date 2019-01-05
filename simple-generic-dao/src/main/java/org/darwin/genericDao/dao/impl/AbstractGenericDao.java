@@ -71,12 +71,15 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
    * 构造函数
    */
   public AbstractGenericDao() {
-    this((Class<ENTITY>) GenericDaoUtils.getGenericEntityClass(AbstractGenericDao.class, AbstractGenericDao.class, 0));
+    this(null);
   }
 
 
 
   public AbstractGenericDao(Class<ENTITY> entityClass) {
+    if(entityClass == null){
+      entityClass = GenericDaoUtils.getGenericEntityClass(this.getClass(), AbstractGenericDao.class, 0);
+    }
     table = GenericDaoUtils.getTable(entityClass);
     seqConfig = GenericDaoUtils.getSequence(entityClass);
 
