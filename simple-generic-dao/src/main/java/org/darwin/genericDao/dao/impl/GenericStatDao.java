@@ -7,7 +7,6 @@ package org.darwin.genericDao.dao.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,25 +62,31 @@ public class GenericStatDao<ENTITY> extends AbstractGenericDao<ENTITY> implement
         sqlColumn = Utils.concat(type.value(), "(", sqlColumn, ") as ", sqlColumn);
       }
       allColumns.add(sqlColumn);
-      dbColumnMapping.put(mapper.getSQLColumn(),sqlColumn);
 
       //时间字段
       if (type == Type.DATE) {
-        keyColumns.add(mapper);
-        dateColumn = mapper;
+        keyColumns.add(sqlColumn);
+        dateColumn = sqlColumn;
       }
 
       //key字段
       if (type == Type.KEY) {
-        keyColumns.add(mapper);
+        keyColumns.add(sqlColumn);
       }
     }
   }
 
-  protected ColumnMapper dateColumn = null;
-  protected List<ColumnMapper> keyColumns = new ArrayList<ColumnMapper>();
+  protected String dateColumn = null;
+  protected List<String> keyColumns = new ArrayList<String>();
   protected List<String> allColumns = new ArrayList<String>();
-  protected Map<String,String> dbColumnMapping = new HashMap<>();
+
+  protected QueryColumnFormat extractSQLColumnStyle() {
+    QueryColumnFormat queryColumnFormat = super.extractSQLColumnStyle();
+    if(queryColumnFormat != QueryColumnFormat.DB_COLUMN_NAME) {
+      throw new RuntimeException("StatDao JUST support DB_COLUMN_NAME format.");
+    }
+    return queryColumnFormat;
+  }
 
   /**
    * 获取数据，如果需要按时间聚合，则按其他字段groupBy，把不同时间的汇总到一起
@@ -112,16 +117,11 @@ public class GenericStatDao<ENTITY> extends AbstractGenericDao<ENTITY> implement
 
   /**
    * 根据匹配条件，分组规则，排序规则进行统计
-   *
+   * 
    * @param matches
    * @param groups
    * @param orders
-   * @param column 列名称，对应ENTITY的的属性，可以是属性名也可以是数据库字段名称
-   * @param eClass
-   * @param <E>
-   * @return
-   *
-   * created by Tianxin on 2015年6月4日 下午8:23:27
+   * @return created by Tianxin on 2015年6月4日 下午8:23:27
    */
   public <E> List<E> statOneColumnByMgo(Matches matches, Groups groups, Orders orders, String column, Class<E> eClass) {
     return statPageOneColumnByMgo(matches, groups, orders, column, eClass, 0, 0);
@@ -129,22 +129,15 @@ public class GenericStatDao<ENTITY> extends AbstractGenericDao<ENTITY> implement
 
   /**
    * 根据匹配条件，分组规则，排序规则进行统计
-   *
+   * 
    * @param matches
    * @param groups
    * @param orders
-   * @param column 列名称，对应ENTITY的的属性，可以是属性名也可以是数据库字段名称
-   * @param eClass
-   * @param offset
-   * @param rows
-   * @param <E>
-   * @return
-   *
    * @return created by Tianxin on 2015年6月4日 下午8:23:27
    */
   public <E> List<E> statPageOneColumnByMgo(Matches matches, Groups groups, Orders orders, String column, Class<E> eClass, int offset, int rows) {
-    QueryStat query = new QueryStat(Arrays.asList(dbColumnMapping.get(columnNameConverter.convert(column))), matches, groups, orders, table(), offset, rows);
-    String sql = query.getSQL(columnNameConverter);
+    QueryStat query = new QueryStat(Arrays.asList(column), matches, groups, orders, table(), offset, rows);
+    String sql = query.getSQL(super.columnNameConverter);
     Object[] params = query.getParams();
     LOG.info(Utils.toLogSQL(sql, params));
     return findBySQL(eClass, sql, params);
@@ -195,7 +188,7 @@ public class GenericStatDao<ENTITY> extends AbstractGenericDao<ENTITY> implement
    * @return created by Tianxin on 2015年6月3日 下午4:06:19
    */
   protected List<ENTITY> statByQuery(QueryStat query) {
-    String sql = query.getSQL(columnNameConverter);
+    String sql = query.getSQL(super.columnNameConverter);
     Object[] params = query.getParams();
     return findBySQL(entityClass, sql, params);
   }
@@ -209,7 +202,7 @@ public class GenericStatDao<ENTITY> extends AbstractGenericDao<ENTITY> implement
    * @return created by Tianxin on 2015年6月3日 下午8:16:37
    */
   public List<ENTITY> statByRange(int startDate, int endDate, boolean aggregationByDate) {
-    Matches matches = Matches.one(getUseColumnName(dateColumn), SQLParams.between(startDate, endDate));
+    Matches matches = Matches.one(dateColumn, SQLParams.between(startDate, endDate));
     Groups groups = aggregationByDate ? generateAggergationByDateGroups() : Groups.init();
     return statByMgo(matches, groups, null);
   }
@@ -221,18 +214,11 @@ public class GenericStatDao<ENTITY> extends AbstractGenericDao<ENTITY> implement
    */
   private Groups generateAggergationByDateGroups() {
     Groups groups = Groups.init();
-    for (ColumnMapper column : keyColumns) {
+    for (String column : keyColumns) {
       if (!column.equals(dateColumn)) {
-        groups.groupBy(getUseColumnName(column));
+        groups.groupBy(column);
       }
     }
     return groups;
-  }
-
-  private String getUseColumnName(ColumnMapper mapper) {
-    if(columnNameConverter.getColumnFormat() == QueryColumnFormat.POJO_FIELD_NAME) {
-      return mapper.getFieldName();
-    }
-    return mapper.getSQLColumn();
   }
 }

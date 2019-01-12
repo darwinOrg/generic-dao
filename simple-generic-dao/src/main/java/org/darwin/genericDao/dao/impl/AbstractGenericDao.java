@@ -126,7 +126,7 @@ public class AbstractGenericDao<ENTITY> implements TableAware {
     };
   }
 
-  private QueryColumnFormat extractSQLColumnStyle() {
+  protected QueryColumnFormat extractSQLColumnStyle() {
     Class<?> clazz = this.getClass();
 
     while (!clazz.equals(AbstractGenericDao.class)) {
